@@ -7,13 +7,59 @@
 //
 
 #import "OLAppDelegate.h"
-
+#import "OLImageView.h"
+#import "OLImage.h"
 @implementation OLAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
+    
+    UIViewController *normalAnimatedVC = [UIViewController new];
+    normalAnimatedVC.title = @"UIImageView";
+    UIImageView *imv = [UIImageView new];
+    imv.image = [UIImage animatedImageNamed:@"BB" duration:1.6];
+    normalAnimatedVC.view = imv;
+    
+    UIViewController *magicAnimatedVC = [UIViewController new];
+    magicAnimatedVC.title = @"OLImageView";
+    OLImageView *Aimv = [OLImageView new];
+        
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"notEven" ofType:@"gif"];
+    NSData *GIFDATA = [NSData dataWithContentsOfFile:filePath];
+    Aimv.image = [OLImage imageWithData:GIFDATA];
+    [Aimv setFrame:CGRectMake(0, 0, 200, 200)];
+    [magicAnimatedVC.view addSubview:Aimv];
+    
+    Aimv = [OLImageView new];
+    
+    filePath = [[NSBundle mainBundle] pathForResource:@"BLEH" ofType:@"gif"];
+    GIFDATA = [NSData dataWithContentsOfFile:filePath];
+    Aimv.image = [OLImage imageWithData:GIFDATA];
+    [Aimv setFrame:CGRectMake(0, 200, 200, 200)];
+    [magicAnimatedVC.view addSubview:Aimv];
+    
+    Aimv = [OLImageView new];
+    
+    filePath = [[NSBundle mainBundle] pathForResource:@"fdgdf" ofType:@"gif"];
+    GIFDATA = [NSData dataWithContentsOfFile:filePath];
+    Aimv.image = [OLImage imageWithData:GIFDATA];
+    [Aimv setFrame:CGRectMake(0, 200, 200, 200)];
+    [magicAnimatedVC.view addSubview:Aimv];
+    
+    Aimv = [OLImageView new];
+    
+    filePath = [[NSBundle mainBundle] pathForResource:@"AA" ofType:@"gif"];
+    GIFDATA = [NSData dataWithContentsOfFile:filePath];
+    Aimv.image = [OLImage imageWithData:GIFDATA];
+    [Aimv setFrame:CGRectMake(200, 200, 200, 200)];
+    [magicAnimatedVC.view addSubview:Aimv];
+    
+    UITabBarController *tbc = [[UITabBarController alloc] init];
+    
+    [tbc setViewControllers:[NSArray arrayWithObjects:normalAnimatedVC, magicAnimatedVC, nil]];
+    self.window.rootViewController = tbc;
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;
