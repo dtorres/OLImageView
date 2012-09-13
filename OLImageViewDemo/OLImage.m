@@ -86,25 +86,52 @@ inline static BOOL CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDurat
         return [UIImage imageWithData:data];
     }
     NSUInteger numberOfFrames = CGImageSourceGetCount(imageSource);
-    NSTimeInterval *finalDuration = (NSTimeInterval *) malloc(sizeof(NSTimeInterval));
-    NSTimeInterval *frameDurations = (NSTimeInterval *) malloc(numberOfFrames  * sizeof(NSTimeInterval));
-    NSMutableArray *images = [NSMutableArray arrayWithCapacity:numberOfFrames];
-    
-    BOOL evenDuration = CGImageSourceGetFramesAndDurations(finalDuration, frameDurations, images, imageSource);
-    CFRelease(imageSource);
-    NSTimeInterval theFinal = *finalDuration;
-    free(finalDuration);
-    if (evenDuration) {
-        free(frameDurations);
-        return [UIImage animatedImageWithImages:images duration:theFinal];
-    }
-    
     
     OLImage *animatedImage = [[OLImage  alloc] init];
-    animatedImage.images = images;
     animatedImage.even = NO;
-    animatedImage.totalDuration = theFinal;
-    animatedImage.frameDurations = frameDurations;
+    animatedImage.images = [NSMutableArray arrayWithCapacity:numberOfFrames];
+    animatedImage.frameDurations = (NSTimeInterval *) malloc(numberOfFrames  * sizeof(NSTimeInterval));
+    animatedImage.totalDuration = 0.0f;
+    //Load First Frame
+    double proposedFrameDuration = CGImageSourceGetGifFrameDelay(imageSource, 0);
+#ifndef OLExactGIFRepresentation
+    proposedFrameDuration = (proposedFrameDuration >= 0.02) ? proposedFrameDuration : 0.10f;
+#endif
+    animatedImage.frameDurations[0] = proposedFrameDuration;
+    
+    CGImageRef theImage = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
+    [animatedImage.images addObject:[UIImage imageWithCGImage:theImage]];
+    CFRelease(theImage);
+    animatedImage.totalDuration += animatedImage.frameDurations[0];
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+        BOOL evenFrameDuration = YES;
+        NSUInteger numberOfFrames = CGImageSourceGetCount(imageSource);
+        for (NSUInteger i = 1; i < numberOfFrames; ++i) {
+            
+            //Implement as Browsers do, to ensure UX.
+            //See: http://nullsleep.tumblr.com/post/16524517190/animated-gif-minimum-frame-delay-browser-compatibility
+            //See also: http://blogs.msdn.com/b/ieinternals/archive/2010/06/08/animated-gifs-slow-down-to-under-20-frames-per-second.aspx
+            double proposedFrameDuration = CGImageSourceGetGifFrameDelay(imageSource, i);
+#ifndef OLExactGIFRepresentation
+            proposedFrameDuration = (proposedFrameDuration >= 0.02) ? proposedFrameDuration : 0.10f;
+#endif
+            animatedImage.frameDurations[i] = proposedFrameDuration;
+            
+            if (evenFrameDuration && i > 0 && animatedImage.frameDurations[i] != animatedImage.frameDurations[i-1]) {
+                evenFrameDuration = NO;
+            }
+            
+            CGImageRef theImage = CGImageSourceCreateImageAtIndex(imageSource, i, NULL);
+            [animatedImage.images addObject:[UIImage imageWithCGImage:theImage]];
+            CFRelease(theImage);
+            animatedImage.totalDuration += animatedImage.frameDurations[i];
+        }
+        
+        CFRelease(imageSource);
+        animatedImage.even = evenFrameDuration;        
+    });
     
     return animatedImage;
 }
