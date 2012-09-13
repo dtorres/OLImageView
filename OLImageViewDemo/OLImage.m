@@ -64,14 +64,14 @@ inline static BOOL CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDurat
 
 @interface OLImage ()
 
-@property (nonatomic, readwrite, getter = isGIF) BOOL GIF;
+@property (nonatomic, readwrite, getter = isEven) BOOL even;
 @property (nonatomic, readwrite) NSTimeInterval totalDuration;
 @property (nonatomic, readwrite) NSMutableArray *images;
 
 @end
 
 @implementation OLImage
-@synthesize GIF, frameDurations, images;
+@synthesize even, frameDurations, images;
 @synthesize totalDuration = _totalDuration;
 
 
@@ -95,17 +95,16 @@ inline static BOOL CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDurat
     NSTimeInterval theFinal = *finalDuration;
     free(finalDuration);
     if (evenDuration) {
+        free(frameDurations);
         return [UIImage animatedImageWithImages:images duration:theFinal];
     }
     
     
     OLImage *animatedImage = [[OLImage  alloc] init];
     animatedImage.images = images;
+    animatedImage.even = NO;
     animatedImage.totalDuration = theFinal;
     animatedImage.frameDurations = frameDurations;
-    if (numberOfFrames > 1) {
-        animatedImage.GIF = YES;
-    }
     
     return animatedImage;
 }
@@ -123,12 +122,9 @@ inline static BOOL CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDurat
         NSUInteger numberOfFrames = CGImageSourceGetCount(imageSource);
         
         self.images = [NSMutableArray arrayWithCapacity:numberOfFrames];
-        CGImageSourceGetFramesAndDurations(aFinalDuration, self.frameDurations, self.images, imageSource);
+        self.even = CGImageSourceGetFramesAndDurations(aFinalDuration, self.frameDurations, self.images, imageSource);
         _totalDuration = *aFinalDuration;
         
-        if (numberOfFrames > 1) {
-            self.GIF = YES;
-        }
         return self;
     }
     return nil;
@@ -136,7 +132,14 @@ inline static BOOL CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDurat
 }
 
 - (NSTimeInterval)duration {
+    if (self.isEven) {
+        return self.totalDuration;
+    }
     return 0;
+}
+
+-(void)dealloc {
+    free(frameDurations);
 }
 
 @end

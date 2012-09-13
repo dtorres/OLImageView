@@ -40,7 +40,7 @@
     self.currentFrameIndex = 0;
     self.animatedImage = nil;
     
-    if ([image isKindOfClass:[OLImage class]] && [(OLImage *)image isGIF]) {
+    if ([image isKindOfClass:[OLImage class]] && ![(OLImage *)image isEven]) {
         self.animatedImage = (OLImage *)image;
         self.layer.contents = (__bridge id)([(UIImage *)[self.animatedImage.images objectAtIndex:0] CGImage]);
         [self startAnimating];
@@ -87,9 +87,12 @@
         }
         self.currentFrameIndex = newIndex;
         self.currentKeyframeElapsedTime = 0.0f;
-
-        self.layer.contents = (__bridge id)([(UIImage *)[self.animatedImage.images objectAtIndex:self.currentFrameIndex] CGImage]);
+        [self.layer setNeedsDisplay];
     }
+}
+
+- (void)displayLayer:(CALayer *)layer {
+    layer.contents = (__bridge id)([(UIImage *)[self.animatedImage.images objectAtIndex:self.currentFrameIndex] CGImage]);
 }
 
 - (void)didMoveToSuperview {
