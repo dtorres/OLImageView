@@ -64,14 +64,13 @@ inline static BOOL CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDurat
 
 @interface OLImage ()
 
-@property (nonatomic, readwrite, getter = isEven) BOOL even;
 @property (nonatomic, readwrite) NSTimeInterval totalDuration;
 @property (nonatomic, readwrite) NSMutableArray *images;
 
 @end
 
 @implementation OLImage
-@synthesize even, frameDurations, images;
+@synthesize frameDurations, images;
 @synthesize totalDuration = _totalDuration;
 
 
@@ -88,7 +87,6 @@ inline static BOOL CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDurat
     NSUInteger numberOfFrames = CGImageSourceGetCount(imageSource);
     
     OLImage *animatedImage = [[OLImage  alloc] init];
-    animatedImage.even = NO;
     animatedImage.images = [NSMutableArray arrayWithCapacity:numberOfFrames];
     animatedImage.frameDurations = (NSTimeInterval *) malloc(numberOfFrames  * sizeof(NSTimeInterval));
     animatedImage.totalDuration = 0.0f;
@@ -130,7 +128,6 @@ inline static BOOL CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDurat
         }
         
         CFRelease(imageSource);
-        animatedImage.even = evenFrameDuration;        
     });
     
     return animatedImage;
@@ -149,7 +146,7 @@ inline static BOOL CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDurat
         NSUInteger numberOfFrames = CGImageSourceGetCount(imageSource);
         
         self.images = [NSMutableArray arrayWithCapacity:numberOfFrames];
-        self.even = CGImageSourceGetFramesAndDurations(aFinalDuration, self.frameDurations, self.images, imageSource);
+        CGImageSourceGetFramesAndDurations(aFinalDuration, self.frameDurations, self.images, imageSource);
         _totalDuration = *aFinalDuration;
         
         return self;
@@ -159,9 +156,6 @@ inline static BOOL CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDurat
 }
 
 - (NSTimeInterval)duration {
-    if (self.isEven) {
-        return self.totalDuration;
-    }
     return 0;
 }
 

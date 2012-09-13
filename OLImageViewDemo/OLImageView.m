@@ -40,7 +40,7 @@
     self.currentFrameIndex = 0;
     self.animatedImage = nil;
     
-    if ([image isKindOfClass:[OLImage class]] && ![(OLImage *)image isEven]) {
+    if ([image isKindOfClass:[OLImage class]] && image.images) {
         self.animatedImage = (OLImage *)image;
         self.layer.contents = (__bridge id)([(UIImage *)[self.animatedImage.images objectAtIndex:0] CGImage]);
         [self startAnimating];

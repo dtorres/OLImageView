@@ -11,7 +11,6 @@
 @interface OLImage : UIImage
 
 @property (nonatomic) NSTimeInterval *frameDurations;
-@property (nonatomic, readonly, getter = isEven) BOOL even;
 @property (nonatomic, readonly) NSTimeInterval totalDuration;
 
 @end
