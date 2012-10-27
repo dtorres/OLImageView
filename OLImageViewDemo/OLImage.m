@@ -80,11 +80,11 @@ inline static BOOL CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDurat
     if (!imageSource)
         return nil;
     
-    if (!UTTypeConformsTo(CGImageSourceGetType(imageSource), kUTTypeGIF)) {
+    NSUInteger numberOfFrames = CGImageSourceGetCount(imageSource);
+    if (!UTTypeConformsTo(CGImageSourceGetType(imageSource), kUTTypeGIF) || numberOfFrames == 1) {
         CFRelease(imageSource);
         return [UIImage imageWithData:data];
     }
-    NSUInteger numberOfFrames = CGImageSourceGetCount(imageSource);
     
     OLImage *animatedImage = [[OLImage  alloc] init];
     animatedImage.images = [NSMutableArray arrayWithCapacity:numberOfFrames];
