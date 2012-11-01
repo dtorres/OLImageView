@@ -103,4 +103,11 @@
     }
 }
 
+- (UIImage *)image {
+    if (self.animatedImage != nil) {
+        return self.animatedImage;
+    }
+    return [super image];
+}
+
 @end
