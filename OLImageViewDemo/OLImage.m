@@ -155,6 +155,14 @@ inline static BOOL CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDurat
     
 }
 
+- (CGSize)size
+{
+    if (images) {
+        return [[images objectAtIndex:0] size];
+    }
+    return [super size];
+}
+
 - (NSTimeInterval)duration {
     return 0;
 }
