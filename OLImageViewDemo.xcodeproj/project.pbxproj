@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		5A053BE215F844060014BF82 /* BLEH.gif in Resources */ = {isa = PBXBuildFile; fileRef = 5A053BE115F844060014BF82 /* BLEH.gif */; };
+		5A1F4BBD165C449E00B61FCF /* OLImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A1F4BBA165C449E00B61FCF /* OLImage.m */; };
+		5A1F4BBE165C449E00B61FCF /* OLImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A1F4BBC165C449E00B61FCF /* OLImageView.m */; };
 		5A2FFAA415F7F56100CEE5F6 /* notEven.gif in Resources */ = {isa = PBXBuildFile; fileRef = 5A2FFAA315F7F56100CEE5F6 /* notEven.gif */; };
 		5A2FFAA715F800D500CEE5F6 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A2FFAA615F800D500CEE5F6 /* QuartzCore.framework */; };
 		5A796D0215F79EC7008A8FBF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A796D0115F79EC7008A8FBF /* UIKit.framework */; };
@@ -16,8 +18,6 @@
 		5A796D0C15F79EC7008A8FBF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5A796D0A15F79EC7008A8FBF /* InfoPlist.strings */; };
 		5A796D0E15F79EC8008A8FBF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A796D0D15F79EC8008A8FBF /* main.m */; };
 		5A796D1215F79EC8008A8FBF /* OLAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A796D1115F79EC8008A8FBF /* OLAppDelegate.m */; };
-		5A796D2115F79F98008A8FBF /* OLImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A796D2015F79F98008A8FBF /* OLImage.m */; };
-		5A796D2415F79FBC008A8FBF /* OLImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A796D2315F79FBC008A8FBF /* OLImageView.m */; };
 		5A796D3515F7ABD9008A8FBF /* BB1.png in Resources */ = {isa = PBXBuildFile; fileRef = 5A796D2515F7ABD9008A8FBF /* BB1.png */; };
 		5A796D3615F7ABD9008A8FBF /* BB2.png in Resources */ = {isa = PBXBuildFile; fileRef = 5A796D2615F7ABD9008A8FBF /* BB2.png */; };
 		5A796D3715F7ABD9008A8FBF /* BB3.png in Resources */ = {isa = PBXBuildFile; fileRef = 5A796D2715F7ABD9008A8FBF /* BB3.png */; };
@@ -43,6 +43,10 @@
 
 /* Begin PBXFileReference section */
 		5A053BE115F844060014BF82 /* BLEH.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = BLEH.gif; sourceTree = "<group>"; };
+		5A1F4BB9165C449E00B61FCF /* OLImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OLImage.h; sourceTree = SOURCE_ROOT; };
+		5A1F4BBA165C449E00B61FCF /* OLImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OLImage.m; sourceTree = SOURCE_ROOT; };
+		5A1F4BBB165C449E00B61FCF /* OLImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OLImageView.h; sourceTree = SOURCE_ROOT; };
+		5A1F4BBC165C449E00B61FCF /* OLImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OLImageView.m; sourceTree = SOURCE_ROOT; };
 		5A2FFAA315F7F56100CEE5F6 /* notEven.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = notEven.gif; sourceTree = "<group>"; };
 		5A2FFAA615F800D500CEE5F6 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		5A796CFD15F79EC7008A8FBF /* OLImageViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OLImageViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -55,10 +59,6 @@
 		5A796D0F15F79EC8008A8FBF /* OLImageViewDemo-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OLImageViewDemo-Prefix.pch"; sourceTree = "<group>"; };
 		5A796D1015F79EC8008A8FBF /* OLAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OLAppDelegate.h; sourceTree = "<group>"; };
 		5A796D1115F79EC8008A8FBF /* OLAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OLAppDelegate.m; sourceTree = "<group>"; };
-		5A796D1F15F79F98008A8FBF /* OLImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OLImage.h; sourceTree = "<group>"; };
-		5A796D2015F79F98008A8FBF /* OLImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OLImage.m; sourceTree = "<group>"; };
-		5A796D2215F79FBC008A8FBF /* OLImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OLImageView.h; sourceTree = "<group>"; };
-		5A796D2315F79FBC008A8FBF /* OLImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OLImageView.m; sourceTree = "<group>"; };
 		5A796D2515F7ABD9008A8FBF /* BB1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BB1.png; sourceTree = "<group>"; };
 		5A796D2615F7ABD9008A8FBF /* BB2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BB2.png; sourceTree = "<group>"; };
 		5A796D2715F7ABD9008A8FBF /* BB3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BB3.png; sourceTree = "<group>"; };
@@ -134,10 +134,10 @@
 			children = (
 				5A796D1015F79EC8008A8FBF /* OLAppDelegate.h */,
 				5A796D1115F79EC8008A8FBF /* OLAppDelegate.m */,
-				5A796D2215F79FBC008A8FBF /* OLImageView.h */,
-				5A796D2315F79FBC008A8FBF /* OLImageView.m */,
-				5A796D1F15F79F98008A8FBF /* OLImage.h */,
-				5A796D2015F79F98008A8FBF /* OLImage.m */,
+				5A1F4BB9165C449E00B61FCF /* OLImage.h */,
+				5A1F4BBA165C449E00B61FCF /* OLImage.m */,
+				5A1F4BBB165C449E00B61FCF /* OLImageView.h */,
+				5A1F4BBC165C449E00B61FCF /* OLImageView.m */,
 				5A796D0815F79EC7008A8FBF /* Supporting Files */,
 			);
 			path = OLImageViewDemo;
@@ -261,8 +261,8 @@
 			files = (
 				5A796D0E15F79EC8008A8FBF /* main.m in Sources */,
 				5A796D1215F79EC8008A8FBF /* OLAppDelegate.m in Sources */,
-				5A796D2115F79F98008A8FBF /* OLImage.m in Sources */,
-				5A796D2415F79FBC008A8FBF /* OLImageView.m in Sources */,
+				5A1F4BBD165C449E00B61FCF /* OLImage.m in Sources */,
+				5A1F4BBE165C449E00B61FCF /* OLImageView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
