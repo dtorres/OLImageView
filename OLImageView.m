@@ -16,6 +16,7 @@
 @property (nonatomic) NSTimeInterval currentKeyframeElapsedTime;
 @property (nonatomic) OLImage *animatedImage;
 @property (nonatomic, strong) NSTimer *keyFrameTimer;
+@property (nonatomic, readwrite) NSUInteger loopCountdown;
 
 @end
 
@@ -39,10 +40,12 @@
     [self stopAnimating];
     self.currentFrameIndex = 0;
     self.animatedImage = nil;
+    self.loopCountdown = 0;
     
     if ([image isKindOfClass:[OLImage class]] && image.images) {
         self.animatedImage = (OLImage *)image;
         self.layer.contents = (__bridge id)([(UIImage *)[self.animatedImage.images objectAtIndex:0] CGImage]);
+        self.loopCountdown = self.animatedImage.loopCount > 0 ? self.animatedImage.loopCount : NSUIntegerMax;
         [self startAnimating];
     } else {
         [super setImage:image];
@@ -83,6 +86,11 @@
     if (self.currentKeyframeElapsedTime >= self.animatedImage.frameDurations[self.currentFrameIndex]) {
         NSUInteger newIndex = self.currentFrameIndex + 1;
         if (newIndex >= [self.animatedImage.images count]) {
+            self.loopCountdown--;
+            if (self.loopCountdown == 0) {
+                [self stopAnimating];
+                return;
+            }
             newIndex = 0;
         }
         self.currentFrameIndex = newIndex;

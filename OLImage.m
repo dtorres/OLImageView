@@ -65,6 +65,7 @@ inline static BOOL CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDurat
 @interface OLImage ()
 
 @property (nonatomic, readwrite) NSTimeInterval totalDuration;
+@property (nonatomic, readwrite) NSUInteger loopCount;
 @property (nonatomic, readwrite) NSMutableArray *images;
 
 @end
@@ -86,10 +87,15 @@ inline static BOOL CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDurat
         return [UIImage imageWithData:data];
     }
     
+    NSDictionary *imageProperties = CFBridgingRelease(CGImageSourceCopyProperties(imageSource, NULL));
+    NSDictionary *GIFProperties = [imageProperties objectForKey:(NSString *)kCGImagePropertyGIFDictionary];
+    
     OLImage *animatedImage = [[OLImage  alloc] init];
     animatedImage.images = [NSMutableArray arrayWithCapacity:numberOfFrames];
     animatedImage.frameDurations = (NSTimeInterval *) malloc(numberOfFrames  * sizeof(NSTimeInterval));
     animatedImage.totalDuration = 0.0f;
+    animatedImage.loopCount = [GIFProperties[(NSString *)kCGImagePropertyGIFLoopCount] unsignedIntegerValue];
+    
     //Load First Frame
     double proposedFrameDuration = CGImageSourceGetGifFrameDelay(imageSource, 0);
 #ifndef OLExactGIFRepresentation
