@@ -34,9 +34,8 @@ inline static double CGImageSourceGetGifFrameDelay(CGImageSourceRef imageSource,
     return frameDuration;
 }
 
-inline static BOOL CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDuration, NSTimeInterval *frameDurations, NSMutableArray *arrayToFill, CGImageSourceRef imageSource)
+inline static void CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDuration, NSTimeInterval *frameDurations, NSMutableArray *arrayToFill, CGImageSourceRef imageSource)
 {
-    BOOL evenFrameDuration = YES;
     NSUInteger numberOfFrames = CGImageSourceGetCount(imageSource);
     for (NSUInteger i = 0; i < numberOfFrames; ++i) {
         
@@ -49,10 +48,6 @@ inline static BOOL CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDurat
         #endif
         frameDurations[i] = proposedFrameDuration;
         
-        if (evenFrameDuration && i > 0 && frameDurations[i] != frameDurations[i-1]) {
-            evenFrameDuration = NO;
-        }
-        
         CGImageRef theImage = CGImageSourceCreateImageAtIndex(imageSource, i, NULL);
         [arrayToFill addObject:[UIImage imageWithCGImage:theImage]];
         CFRelease(theImage);
@@ -60,8 +55,6 @@ inline static BOOL CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDurat
             *finalDuration += frameDurations[i];
         }
     }
-    
-    return evenFrameDuration;
 }
 
 @interface OLImage ()
@@ -112,7 +105,6 @@ inline static BOOL CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDurat
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         
-        BOOL evenFrameDuration = YES;
         NSUInteger numberOfFrames = CGImageSourceGetCount(imageSource);
         for (NSUInteger i = 1; i < numberOfFrames; ++i) {
             
@@ -124,10 +116,6 @@ inline static BOOL CGImageSourceGetFramesAndDurations(NSTimeInterval *finalDurat
             proposedFrameDuration = (proposedFrameDuration >= 0.02) ? proposedFrameDuration : 0.10f;
 #endif
             animatedImage.frameDurations[i] = proposedFrameDuration;
-            
-            if (evenFrameDuration && i > 0 && animatedImage.frameDurations[i] != animatedImage.frameDurations[i-1]) {
-                evenFrameDuration = NO;
-            }
             
             CGImageRef theImage = CGImageSourceCreateImageAtIndex(imageSource, i, NULL);
             [animatedImage.images addObject:[UIImage imageWithCGImage:theImage]];
