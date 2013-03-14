@@ -54,7 +54,10 @@
 
 -(BOOL)isAnimating
 {
-    return (self.keyFrameTimer != nil);
+    if (self.animatedImage) {
+        return (self.loopCountdown > 0);
+    }
+    return [super isAnimating];
 }
 
 -(void)stopAnimating
@@ -63,6 +66,7 @@
         [super stopAnimating];
         return;
     }
+    self.loopCountdown = 0;
 }
 
 -(void)startAnimating
@@ -71,11 +75,12 @@
         [super startAnimating];
         return;
     }
+    self.loopCountdown = self.animatedImage.loopCount > 0 ? self.animatedImage.loopCount : NSUIntegerMax;
 }
 
 - (void)changeKeyframe
 {
-    if (self.animatedImage) {
+    if (self.animatedImage && self.loopCountdown > 0) {
         self.currentKeyframeElapsedTime += self.keyFrameTimer.timeInterval;
         if (self.currentKeyframeElapsedTime >= self.animatedImage.frameDurations[self.currentFrameIndex]) {
             NSUInteger newIndex = self.currentFrameIndex + 1;
