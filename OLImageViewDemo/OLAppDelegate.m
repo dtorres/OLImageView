@@ -30,10 +30,12 @@
     NSData *GIFDATA = [NSData dataWithContentsOfFile:filePath];
     Aimv.image = [OLImage imageWithData:GIFDATA];
     [Aimv setFrame:CGRectMake(0, 0, 200, 200)];
+    UITapGestureRecognizer *gestTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
+    [Aimv setUserInteractionEnabled:YES];
+    [Aimv addGestureRecognizer:gestTap];
     [magicAnimatedVC.view addSubview:Aimv];
     
     Aimv = [OLImageView new];
-    
     filePath = [[NSBundle mainBundle] pathForResource:@"BLEH" ofType:@"gif"];
     GIFDATA = [NSData dataWithContentsOfFile:filePath];
     Aimv.image = [OLImage imageWithData:GIFDATA];
@@ -45,7 +47,7 @@
     filePath = [[NSBundle mainBundle] pathForResource:@"fdgdf" ofType:@"gif"];
     GIFDATA = [NSData dataWithContentsOfFile:filePath];
     Aimv.image = [OLImage imageWithData:GIFDATA];
-    [Aimv setFrame:CGRectMake(0, 200, 200, 200)];
+    [Aimv setFrame:CGRectMake(200, 0, 200, 200)];
     [magicAnimatedVC.view addSubview:Aimv];
     
     Aimv = [OLImageView new];
@@ -63,6 +65,18 @@
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;
+}
+
+- (void)handleTap:(UITapGestureRecognizer *)gestRecon
+{
+    OLImageView *imageView = gestRecon.view;
+    if (imageView.isAnimating) {
+        NSLog(@"STOP");
+        [imageView stopAnimating];
+    } else {
+         NSLog(@"START");
+        [imageView startAnimating];
+    }
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
