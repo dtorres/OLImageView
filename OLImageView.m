@@ -120,6 +120,13 @@
     }
 }
 
+- (void)setHighlighted:(BOOL)highlighted
+{
+    if (!self.animatedImage) {
+        [super setHighlighted:highlighted];
+    }
+}
+
 - (UIImage *)image
 {
     if (self.animatedImage != nil) {
