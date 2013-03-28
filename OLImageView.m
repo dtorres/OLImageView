@@ -103,7 +103,8 @@
 {
     if (self.window) {
         if (!self.keyFrameTimer) {
-            self.keyFrameTimer = [NSTimer timerWithTimeInterval:0.005 target:self selector:@selector(changeKeyframe) userInfo:nil repeats:YES];//[NSTimer scheduledTimerWithTimeInterval:0.005 target:self selector:@selector(changeKeyframe) userInfo:nil repeats:YES];
+            self.keyFrameTimer = [NSTimer timerWithTimeInterval:0.005 target:self selector:@selector(changeKeyframe) userInfo:nil repeats:YES];
+            
             [[NSRunLoop currentRunLoop] addTimer:self.keyFrameTimer forMode:NSRunLoopCommonModes];
         }
     } else {
