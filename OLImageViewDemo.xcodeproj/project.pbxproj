@@ -43,6 +43,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		07CCC8E8170524130062371E /* AFImageRequestOperation+OLImage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "AFImageRequestOperation+OLImage.h"; path = "Categories/AFImageRequestOperation+OLImage.h"; sourceTree = SOURCE_ROOT; };
+		07CCC8E9170524130062371E /* AFImageRequestOperation+OLImage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "AFImageRequestOperation+OLImage.m"; path = "Categories/AFImageRequestOperation+OLImage.m"; sourceTree = SOURCE_ROOT; };
 		5A053BE115F844060014BF82 /* BLEH.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = BLEH.gif; sourceTree = "<group>"; };
 		5A1F4BB9165C449E00B61FCF /* OLImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OLImage.h; sourceTree = SOURCE_ROOT; };
 		5A1F4BBA165C449E00B61FCF /* OLImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OLImage.m; sourceTree = SOURCE_ROOT; };
@@ -81,7 +83,7 @@
 		5A796D4D15F7AEA7008A8FBF /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		5A796D4F15F7B077008A8FBF /* BB0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BB0.png; sourceTree = "<group>"; };
 		5A8D914115F844F80078E2B4 /* fdgdf.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = fdgdf.gif; sourceTree = "<group>"; };
-		5A98411B168010900050D42D /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		5A98411B168010900050D42D /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-568h@2x.png"; path = "../Default-568h@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,13 +103,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		07CCC8E6170523B80062371E /* OLImageView */ = {
+			isa = PBXGroup;
+			children = (
+				5A1F4BB9165C449E00B61FCF /* OLImage.h */,
+				5A1F4BBA165C449E00B61FCF /* OLImage.m */,
+				5A1F4BBB165C449E00B61FCF /* OLImageView.h */,
+				5A1F4BBC165C449E00B61FCF /* OLImageView.m */,
+				07CCC8E8170524130062371E /* AFImageRequestOperation+OLImage.h */,
+				07CCC8E9170524130062371E /* AFImageRequestOperation+OLImage.m */,
+			);
+			name = OLImageView;
+			path = OLImageViewDemo;
+			sourceTree = "<group>";
+		};
 		5A796CF215F79EC7008A8FBF = {
 			isa = PBXGroup;
 			children = (
-				5A98411B168010900050D42D /* Default-568h@2x.png */,
-				5A2FFAA615F800D500CEE5F6 /* QuartzCore.framework */,
-				5A796D4D15F7AEA7008A8FBF /* ImageIO.framework */,
-				5A796D4B15F7AE75008A8FBF /* MobileCoreServices.framework */,
+				07CCC8E6170523B80062371E /* OLImageView */,
 				5A796D0715F79EC7008A8FBF /* OLImageViewDemo */,
 				5A796D0015F79EC7008A8FBF /* Frameworks */,
 				5A796CFE15F79EC7008A8FBF /* Products */,
@@ -125,6 +138,9 @@
 		5A796D0015F79EC7008A8FBF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5A2FFAA615F800D500CEE5F6 /* QuartzCore.framework */,
+				5A796D4D15F7AEA7008A8FBF /* ImageIO.framework */,
+				5A796D4B15F7AE75008A8FBF /* MobileCoreServices.framework */,
 				5A796D0115F79EC7008A8FBF /* UIKit.framework */,
 				5A796D0315F79EC7008A8FBF /* Foundation.framework */,
 				5A796D0515F79EC7008A8FBF /* CoreGraphics.framework */,
@@ -137,10 +153,6 @@
 			children = (
 				5A796D1015F79EC8008A8FBF /* OLAppDelegate.h */,
 				5A796D1115F79EC8008A8FBF /* OLAppDelegate.m */,
-				5A1F4BB9165C449E00B61FCF /* OLImage.h */,
-				5A1F4BBA165C449E00B61FCF /* OLImage.m */,
-				5A1F4BBB165C449E00B61FCF /* OLImageView.h */,
-				5A1F4BBC165C449E00B61FCF /* OLImageView.m */,
 				5A796D0815F79EC7008A8FBF /* Supporting Files */,
 			);
 			path = OLImageViewDemo;
@@ -149,6 +161,7 @@
 		5A796D0815F79EC7008A8FBF /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				5A98411B168010900050D42D /* Default-568h@2x.png */,
 				5A8D914115F844F80078E2B4 /* fdgdf.gif */,
 				5A053BE115F844060014BF82 /* BLEH.gif */,
 				5A2FFAA315F7F56100CEE5F6 /* notEven.gif */,
@@ -305,7 +318,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -325,7 +338,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
