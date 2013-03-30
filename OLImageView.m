@@ -139,6 +139,13 @@
     }
 }
 
+- (void)setHighlighted:(BOOL)highlighted
+{
+    if (!self.animatedImage) {
+        [super setHighlighted:highlighted];
+    }
+}
+
 - (UIImage *)image
 {
     return self.animatedImage ?: [super image];
