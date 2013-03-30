@@ -23,33 +23,45 @@
     
     UIViewController *magicAnimatedVC = [UIViewController new];
     magicAnimatedVC.title = @"OLImageView";
-    OLImageView *Aimv = [OLImageView new];
 
-    Aimv = [[OLImageView alloc] initWithImage:[OLImage imageNamed:@"notEven.gif"]];
+    OLImageView *Aimv = [[OLImageView alloc] initWithImage:[OLImage imageNamed:@"notEven.gif"]];
     [Aimv setFrame:CGRectMake(0, 0, 160, 160)];
-    UITapGestureRecognizer *gestTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     [Aimv setUserInteractionEnabled:YES];
-    [Aimv addGestureRecognizer:gestTap];
+    [Aimv addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)]];
     [magicAnimatedVC.view addSubview:Aimv];
     
     Aimv = [[OLImageView alloc] initWithImage:[OLImage imageNamed:@"BLEH.gif"]];
     [Aimv setFrame:CGRectMake(0, 160, 160, 160)];
+    [Aimv setUserInteractionEnabled:YES];
+    [Aimv addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)]];
     [magicAnimatedVC.view addSubview:Aimv];
     
     Aimv = [[OLImageView alloc] initWithImage:[OLImage imageNamed:@"fdgdf.gif"]];
     [Aimv setFrame:CGRectMake(160, 0, 160, 160)];
+    [Aimv setUserInteractionEnabled:YES];
+    [Aimv addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)]];
     [magicAnimatedVC.view addSubview:Aimv];
     
     Aimv = [[OLImageView alloc] initWithImage:[OLImage imageNamed:@"AA.gif"]];
     [Aimv setFrame:CGRectMake(160, 160, 160, 160)];
+    [Aimv setUserInteractionEnabled:YES];
+    [Aimv addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)]];
     [magicAnimatedVC.view addSubview:Aimv];
     
-    UITabBarController *tbc = [[UITabBarController alloc] init];
+    for (NSUInteger i = 1; i <= 10; i++) {
+        NSString *filename = [NSString stringWithFormat:@"%u.gif", i];
+        OLImageView *frameCountImage = [[OLImageView alloc] initWithImage:[OLImage imageNamed:filename]];
+        [frameCountImage setFrame:CGRectMake((i - 1) * 32, 320, 32, 32)];
+        [magicAnimatedVC.view addSubview:frameCountImage];
+    }
     
-    [tbc setViewControllers:[NSArray arrayWithObjects:normalAnimatedVC, magicAnimatedVC, nil]];
+    UITabBarController *tbc = [[UITabBarController alloc] init];
+    [tbc setViewControllers:@[normalAnimatedVC, magicAnimatedVC]];
+    
     self.window.rootViewController = tbc;
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
+    
     return YES;
 }
 
