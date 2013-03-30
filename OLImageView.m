@@ -58,9 +58,12 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
 - (void)setImage:(UIImage *)image
 {
     [self stopAnimating];
-    self.currentFrameIndex = 0;
     self.animatedImage = nil;
+    
+    self.currentFrameIndex = 0;
+    self.previousTimeStamp = 0;
     self.loopCountdown = 0;
+    self.accumulator = 0;
     
     if ([image isKindOfClass:[OLImage class]] && image.images) {
         self.animatedImage = (OLImage *)image;
@@ -74,7 +77,7 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
 
 - (BOOL)isAnimating
 {
-    return self.displayLink && !self.displayLink.isPaused;
+    return [super isAnimating] || (self.displayLink && !self.displayLink.isPaused);
 }
 
 - (void)stopAnimating
@@ -102,7 +105,6 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
     
     self.loopCountdown = self.animatedImage.loopCount ?: NSUIntegerMax;
     self.previousTimeStamp = 0;
-    self.accumulator = 0;
     
     [self.displayLink invalidate];
     self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(changeKeyframe:)];
