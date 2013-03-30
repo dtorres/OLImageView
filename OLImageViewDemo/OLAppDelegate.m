@@ -69,7 +69,7 @@
 
 - (void)handleTap:(UITapGestureRecognizer *)gestRecon
 {
-    OLImageView *imageView = gestRecon.view;
+    OLImageView *imageView = (OLImageView *)gestRecon.view;
     if (imageView.isAnimating) {
         NSLog(@"STOP");
         [imageView stopAnimating];
