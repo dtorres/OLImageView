@@ -92,17 +92,17 @@ inline static NSTimeInterval CGImageSourceGetFramesAndDurations(NSTimeInterval *
     //Load First Frame
     animatedImage.frameDurations[0] = CGImageSourceGetGifFrameDelay(imageSource, 0);
     
-    CGImageRef theImage = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
-    [animatedImage.images addObject:[UIImage imageWithCGImage:theImage]];
-    CFRelease(theImage);
+    CGImageRef firstImage = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
+    [animatedImage.images addObject:[UIImage imageWithCGImage:firstImage]];
+    CFRelease(firstImage);
     animatedImage.totalDuration += animatedImage.frameDurations[0];
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         for (NSUInteger i = 1; i < numberOfFrames; ++i) {
             animatedImage.frameDurations[i] = CGImageSourceGetGifFrameDelay(imageSource, i);
-            CGImageRef theImage = CGImageSourceCreateImageAtIndex(imageSource, i, NULL);
-            [animatedImage.images addObject:[UIImage imageWithCGImage:theImage]];
-            CFRelease(theImage);
+            CGImageRef frameImage = CGImageSourceCreateImageAtIndex(imageSource, i, NULL);
+            [animatedImage.images addObject:[UIImage imageWithCGImage:frameImage]];
+            CFRelease(frameImage);
             animatedImage.totalDuration += animatedImage.frameDurations[i];
         }
         
