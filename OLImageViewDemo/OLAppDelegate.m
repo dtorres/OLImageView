@@ -10,6 +10,8 @@
 #import "OLImageView.h"
 #import "OLImage.h"
 
+#define OLDemoShowAnimationTickers YES
+
 @implementation OLAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -48,12 +50,15 @@
     [Aimv addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)]];
     [magicAnimatedVC.view addSubview:Aimv];
     
+#if OLDemoShowAnimationTickers
+    // GIFs from http://blog.fenrir-inc.com/us/2012/02/theyre-different-how-to-match-the-animation-rate-of-gif-files-accross-browsers.html
     for (NSUInteger i = 1; i <= 10; i++) {
         NSString *filename = [NSString stringWithFormat:@"%u.gif", i];
         OLImageView *frameCountImage = [[OLImageView alloc] initWithImage:[OLImage imageNamed:filename]];
         [frameCountImage setFrame:CGRectMake((i - 1) * 32, 320, 32, 32)];
         [magicAnimatedVC.view addSubview:frameCountImage];
     }
+#endif
     
     UITabBarController *tbc = [[UITabBarController alloc] init];
     [tbc setViewControllers:@[normalAnimatedVC, magicAnimatedVC]];
