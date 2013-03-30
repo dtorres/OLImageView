@@ -15,7 +15,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
     
     UIViewController *normalAnimatedVC = [UIViewController new];
     normalAnimatedVC.title = @"UIImageView";
@@ -27,22 +26,22 @@
     OLImageView *Aimv = [OLImageView new];
 
     Aimv = [[OLImageView alloc] initWithImage:[OLImage imageNamed:@"notEven.gif"]];
-    [Aimv setFrame:CGRectMake(0, 0, 200, 200)];
+    [Aimv setFrame:CGRectMake(0, 0, 160, 160)];
     UITapGestureRecognizer *gestTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     [Aimv setUserInteractionEnabled:YES];
     [Aimv addGestureRecognizer:gestTap];
     [magicAnimatedVC.view addSubview:Aimv];
     
     Aimv = [[OLImageView alloc] initWithImage:[OLImage imageNamed:@"BLEH.gif"]];
-    [Aimv setFrame:CGRectMake(0, 200, 200, 200)];
+    [Aimv setFrame:CGRectMake(0, 160, 160, 160)];
     [magicAnimatedVC.view addSubview:Aimv];
     
     Aimv = [[OLImageView alloc] initWithImage:[OLImage imageNamed:@"fdgdf.gif"]];
-    [Aimv setFrame:CGRectMake(200, 0, 200, 200)];
+    [Aimv setFrame:CGRectMake(160, 0, 160, 160)];
     [magicAnimatedVC.view addSubview:Aimv];
     
     Aimv = [[OLImageView alloc] initWithImage:[OLImage imageNamed:@"AA.gif"]];
-    [Aimv setFrame:CGRectMake(200, 200, 200, 200)];
+    [Aimv setFrame:CGRectMake(160, 160, 160, 160)];
     [magicAnimatedVC.view addSubview:Aimv];
     
     UITabBarController *tbc = [[UITabBarController alloc] init];
