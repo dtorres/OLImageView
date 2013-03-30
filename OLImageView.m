@@ -14,13 +14,16 @@
 
 @property (nonatomic, strong) OLImage *animatedImage;
 @property (nonatomic, strong) CADisplayLink *displayLink;
-@property (nonatomic) NSTimeInterval currentFrameTimeStamp;
+@property (nonatomic) NSTimeInterval previousTimeStamp;
+@property (nonatomic) NSTimeInterval accumulator;
 @property (nonatomic) NSUInteger currentFrameIndex;
 @property (nonatomic) NSUInteger loopCountdown;
 
 @end
 
 @implementation OLImageView
+
+const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
 
 @synthesize runLoopMode = _runLoopMode;
 
@@ -101,8 +104,8 @@
     }
     
     self.loopCountdown = self.animatedImage.loopCount ?: NSUIntegerMax;
-    
-    self.currentFrameTimeStamp = 0;
+    self.previousTimeStamp = 0;
+    self.accumulator = 0;
     
     self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(changeKeyframe:)];
 	[self.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:self.runLoopMode];
@@ -111,8 +114,15 @@
 - (void)changeKeyframe:(CADisplayLink *)displayLink
 {
     NSTimeInterval timestamp = displayLink.timestamp;
-    if (timestamp - self.currentFrameTimeStamp >= self.animatedImage.frameDurations[self.currentFrameIndex]) {
-        self.currentFrameTimeStamp = timestamp;
+    
+    if (self.previousTimeStamp == 0) {
+        self.previousTimeStamp = timestamp;
+    }
+    
+    self.accumulator += fmin(timestamp - self.previousTimeStamp, kMaxTimeStep);
+    
+    while (self.accumulator >= self.animatedImage.frameDurations[self.currentFrameIndex]) {
+        self.accumulator -= self.animatedImage.frameDurations[self.currentFrameIndex];
         if (++self.currentFrameIndex >= [self.animatedImage.images count]) {
             if (--self.loopCountdown == 0) {
                 [self stopAnimating];
@@ -122,6 +132,8 @@
         }
         [self.layer setNeedsDisplay];
     }
+    
+    self.previousTimeStamp = timestamp;
 }
 
 - (void)displayLayer:(CALayer *)layer
