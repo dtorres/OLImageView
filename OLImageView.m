@@ -12,30 +12,47 @@
 
 @interface OLImageView ()
 
+@property (nonatomic, strong) OLImage *animatedImage;
+@property (nonatomic, strong) CADisplayLink *displayLink;
+@property (nonatomic) NSTimeInterval currentFrameTimeStamp;
 @property (nonatomic) NSUInteger currentFrameIndex;
-@property (nonatomic) NSTimeInterval currentKeyframeElapsedTime;
-@property (nonatomic) OLImage *animatedImage;
-@property (nonatomic, strong) NSTimer *keyFrameTimer;
-@property (nonatomic, readwrite) NSUInteger loopCountdown;
+@property (nonatomic) NSUInteger loopCountdown;
 
 @end
 
 @implementation OLImageView
 
-@synthesize currentFrameIndex;
+@synthesize runLoopMode = _runLoopMode;
 
--(id)init
+- (id)init
 {
     self = [super init];
     if (self) {
         self.currentFrameIndex = 0;
-        self.animatedImage = nil;
-        self.keyFrameTimer = nil;
     }
     return self;
 }
 
--(void)setImage:(UIImage *)image
+- (void)dealloc
+{
+    [self stopAnimating];
+}
+
+- (NSString *)runLoopMode
+{
+    return _runLoopMode ?: NSDefaultRunLoopMode;
+}
+
+- (void)setRunLoopMode:(NSString *)runLoopMode
+{
+    if (runLoopMode != _runLoopMode) {
+        _runLoopMode = runLoopMode;
+        [self stopAnimating];
+        [self startAnimating];
+    }
+}
+
+- (void)setImage:(UIImage *)image
 {
     [self stopAnimating];
     self.currentFrameIndex = 0;
@@ -44,86 +61,87 @@
     
     if ([image isKindOfClass:[OLImage class]] && image.images) {
         self.animatedImage = (OLImage *)image;
-        self.layer.contents = (__bridge id)([(UIImage *)[self.animatedImage.images objectAtIndex:0] CGImage]);
-        self.loopCountdown = self.animatedImage.loopCount > 0 ? self.animatedImage.loopCount : NSUIntegerMax;
+        self.layer.contents = (__bridge id)([[self.animatedImage.images objectAtIndex:0] CGImage]);
+        self.loopCountdown = self.animatedImage.loopCount ?: NSUIntegerMax;
         [self startAnimating];
     } else {
         [super setImage:image];
     }
 }
 
--(BOOL)isAnimating
+- (BOOL)isAnimating
 {
-    if (self.animatedImage) {
-        return (self.loopCountdown > 0);
-    }
-    return [super isAnimating];
+    return (self.displayLink != nil);
 }
 
--(void)stopAnimating
+- (void)stopAnimating
 {
     if (!self.animatedImage) {
         [super stopAnimating];
         return;
     }
+    
     self.loopCountdown = 0;
+    
+    if (self.displayLink) {
+        [self.displayLink invalidate];
+        self.displayLink = nil;
+    }
 }
 
--(void)startAnimating
+- (void)startAnimating
 {
     if (!self.animatedImage) {
         [super startAnimating];
         return;
     }
-    self.loopCountdown = self.animatedImage.loopCount > 0 ? self.animatedImage.loopCount : NSUIntegerMax;
+    
+    if (self.isAnimating) {
+        return;
+    }
+    
+    self.loopCountdown = self.animatedImage.loopCount ?: NSUIntegerMax;
+    
+    self.currentFrameTimeStamp = 0;
+    
+    self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(changeKeyframe:)];
+	[self.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:self.runLoopMode];
 }
 
-- (void)changeKeyframe
+- (void)changeKeyframe:(CADisplayLink *)displayLink
 {
-    if (self.animatedImage && self.loopCountdown > 0) {
-        self.currentKeyframeElapsedTime += self.keyFrameTimer.timeInterval;
-        if (self.currentKeyframeElapsedTime >= self.animatedImage.frameDurations[self.currentFrameIndex]) {
-            NSUInteger newIndex = self.currentFrameIndex + 1;
-            if (newIndex >= [self.animatedImage.images count]) {
-                self.loopCountdown--;
-                if (self.loopCountdown == 0) {
-                    [self stopAnimating];
-                    return;
-                }
-                newIndex = 0;
+    NSTimeInterval timestamp = displayLink.timestamp;
+    if (timestamp - self.currentFrameTimeStamp >= self.animatedImage.frameDurations[self.currentFrameIndex]) {
+        self.currentFrameTimeStamp = timestamp;
+        if (++self.currentFrameIndex >= [self.animatedImage.images count]) {
+            if (--self.loopCountdown == 0) {
+                [self stopAnimating];
+                return;
             }
-            self.currentFrameIndex = newIndex;
-            self.currentKeyframeElapsedTime = 0.0f;
-            [self.layer setNeedsDisplay];
+            self.currentFrameIndex = 0;
         }
+        [self.layer setNeedsDisplay];
     }
 }
 
 - (void)displayLayer:(CALayer *)layer
 {
-    layer.contents = (__bridge id)([(UIImage *)[self.animatedImage.images objectAtIndex:self.currentFrameIndex] CGImage]);
+    layer.contents = (__bridge id)([[self.animatedImage.images objectAtIndex:self.currentFrameIndex] CGImage]);
 }
 
 - (void)didMoveToWindow
 {
+    [super didMoveToWindow];
     if (self.window) {
-        if (!self.keyFrameTimer) {
-            self.keyFrameTimer = [NSTimer scheduledTimerWithTimeInterval:0.005 target:self selector:@selector(changeKeyframe) userInfo:nil repeats:YES];
-        }
+        [self startAnimating];
     } else {
-        if (self.keyFrameTimer) {
-            [self.keyFrameTimer invalidate];
-            self.keyFrameTimer = nil;
-        }
+        [self stopAnimating];
     }
 }
 
 - (UIImage *)image
 {
-    if (self.animatedImage != nil) {
-        return self.animatedImage;
-    }
-    return [super image];
+    return self.animatedImage ?: [super image];
 }
 
 @end

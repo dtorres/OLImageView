@@ -10,4 +10,6 @@
 
 @interface OLImageView : UIImageView
 
+@property (nonatomic, strong) NSString *runLoopMode;
+
 @end
