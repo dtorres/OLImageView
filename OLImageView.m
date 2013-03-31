@@ -26,6 +26,7 @@
 const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
 
 @synthesize runLoopMode = _runLoopMode;
+@synthesize displayLink = _displayLink;
 
 - (id)init
 {
@@ -38,7 +39,15 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
 
 - (void)dealloc
 {
-    [self.displayLink invalidate];
+    self.displayLink = nil;
+}
+
+- (void)setDisplayLink:(CADisplayLink *)displayLink
+{
+    if (displayLink != _displayLink) {
+        [_displayLink invalidate];
+        _displayLink = displayLink;
+    }
 }
 
 - (NSString *)runLoopMode
@@ -49,8 +58,14 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
 - (void)setRunLoopMode:(NSString *)runLoopMode
 {
     if (runLoopMode != _runLoopMode) {
-        _runLoopMode = runLoopMode;
         [self stopAnimating];
+        
+        NSRunLoop *runloop = [NSRunLoop mainRunLoop];
+        [self.displayLink removeFromRunLoop:runloop forMode:_runLoopMode];
+        [self.displayLink addToRunLoop:runloop forMode:runLoopMode];
+        
+        _runLoopMode = runLoopMode;
+        
         [self startAnimating];
     }
 }
@@ -106,9 +121,12 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
     self.loopCountdown = self.animatedImage.loopCount ?: NSUIntegerMax;
     self.previousTimeStamp = 0;
     
-    [self.displayLink invalidate];
-    self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(changeKeyframe:)];
-    [self.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:self.runLoopMode];
+    if (!self.displayLink) {
+        self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(changeKeyframe:)];
+        [self.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:self.runLoopMode];
+    }
+    
+    self.displayLink.paused = NO;
 }
 
 - (void)changeKeyframe:(CADisplayLink *)displayLink
