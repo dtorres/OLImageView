@@ -20,7 +20,7 @@
     
     UIViewController *normalAnimatedVC = [UIViewController new];
     normalAnimatedVC.title = @"UIImageView";
-    UIImageView *imv = [[UIImageView alloc] initWithImage:[OLImage animatedImageNamed:@"AA.gif" duration:1.6]];
+    UIImageView *imv = [[UIImageView alloc] initWithImage:[UIImage animatedImageNamed:@"BB" duration:1.6]];
     normalAnimatedVC.view = imv;
     
     UIViewController *magicAnimatedVC = [UIViewController new];
@@ -44,7 +44,7 @@
     [Aimv addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)]];
     [magicAnimatedVC.view addSubview:Aimv];
     
-    Aimv = [[UIImageView alloc] initWithImage:[OLImage imageNamed:@"AA.gif"]];
+    Aimv = [[OLImageView alloc] initWithImage:[OLImage imageNamed:@"AA.gif"]];
     [Aimv setFrame:CGRectMake(160, 160, 160, 160)];
     [Aimv setUserInteractionEnabled:YES];
     [Aimv addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)]];
