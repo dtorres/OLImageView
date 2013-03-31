@@ -14,7 +14,6 @@
 
 @property (nonatomic, strong) OLImage *animatedImage;
 @property (nonatomic, strong) CADisplayLink *displayLink;
-@property (nonatomic) NSTimeInterval previousTimeStamp;
 @property (nonatomic) NSTimeInterval accumulator;
 @property (nonatomic) NSUInteger currentFrameIndex;
 @property (nonatomic) NSUInteger loopCountdown;
@@ -76,7 +75,6 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
     self.animatedImage = nil;
     
     self.currentFrameIndex = 0;
-    self.previousTimeStamp = 0;
     self.loopCountdown = 0;
     self.accumulator = 0;
     
@@ -119,7 +117,6 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
     }
     
     self.loopCountdown = self.animatedImage.loopCount ?: NSUIntegerMax;
-    self.previousTimeStamp = 0;
     
     if (!self.displayLink) {
         self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(changeKeyframe:)];
@@ -131,13 +128,7 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
 
 - (void)changeKeyframe:(CADisplayLink *)displayLink
 {
-    NSTimeInterval timestamp = displayLink.timestamp;
-    
-    if (self.previousTimeStamp == 0) {
-        self.previousTimeStamp = timestamp;
-    }
-    
-    self.accumulator += fmin(timestamp - self.previousTimeStamp, kMaxTimeStep);
+    self.accumulator += fmin(displayLink.duration, kMaxTimeStep);
     
     while (self.accumulator >= self.animatedImage.frameDurations[self.currentFrameIndex]) {
         self.accumulator -= self.animatedImage.frameDurations[self.currentFrameIndex];
@@ -150,8 +141,6 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
         }
         [self.layer setNeedsDisplay];
     }
-    
-    self.previousTimeStamp = timestamp;
 }
 
 - (void)displayLayer:(CALayer *)layer
