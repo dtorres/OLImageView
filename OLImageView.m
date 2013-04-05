@@ -72,7 +72,6 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
 - (void)setImage:(UIImage *)image
 {
     [self stopAnimating];
-    self.animatedImage = nil;
     
     self.currentFrameIndex = 0;
     self.loopCountdown = 0;
@@ -80,12 +79,13 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
     
     if ([image isKindOfClass:[OLImage class]] && image.images) {
         self.animatedImage = (OLImage *)image;
-        self.layer.contents = (__bridge id)([[self.animatedImage.images objectAtIndex:0] CGImage]);
         self.loopCountdown = self.animatedImage.loopCount ?: NSUIntegerMax;
         [self startAnimating];
     } else {
+        self.animatedImage = nil;
         [super setImage:image];
     }
+    [self.layer setNeedsDisplay];
 }
 
 - (BOOL)isAnimating
@@ -145,6 +145,9 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
 
 - (void)displayLayer:(CALayer *)layer
 {
+    if (!self.animatedImage) {
+        return;
+    }
     layer.contents = (__bridge id)([[self.animatedImage.images objectAtIndex:self.currentFrameIndex] CGImage]);
 }
 
