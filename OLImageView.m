@@ -88,6 +88,14 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
     [self.layer setNeedsDisplay];
 }
 
+- (void)setAnimatedImage:(OLImage *)animatedImage
+{
+    _animatedImage = animatedImage;
+    if (animatedImage == nil) {
+        self.layer.contents = nil;
+    }
+}
+
 - (BOOL)isAnimating
 {
     return [super isAnimating] || (self.displayLink && !self.displayLink.isPaused);
