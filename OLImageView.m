@@ -71,6 +71,10 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
 
 - (void)setImage:(UIImage *)image
 {
+    if (image == self.image) {
+        return;
+    }
+    
     [self stopAnimating];
     
     self.currentFrameIndex = 0;
