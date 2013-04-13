@@ -60,6 +60,20 @@ inline static BOOL CGImageSourceContainsAnimatedGif(CGImageSourceRef imageSource
 
 @synthesize images;
 
+#pragma mark - Class Methods
+
++ (UIImage *)imageNamed:(NSString *)name
+{
+    NSString *path = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:name];
+    
+    return ([[NSFileManager defaultManager] fileExistsAtPath:path]) ? [OLImage imageWithContentsOfFile:path] : nil;
+}
+
++ (UIImage *)imageWithContentsOfFile:(NSString *)path
+{
+    return [OLImage imageWithData:[NSData dataWithContentsOfFile:path]];
+}
+
 + (id)imageWithData:(NSData *)data
 {
     if (!data) {
@@ -105,6 +119,8 @@ inline static BOOL CGImageSourceContainsAnimatedGif(CGImageSourceRef imageSource
     
     return image;
 }
+
+#pragma mark - Instance Methods
 
 - (id)initWithData:(NSData *)data
 {
@@ -191,18 +207,6 @@ inline static BOOL CGImageSourceContainsAnimatedGif(CGImageSourceRef imageSource
     });
     
     return self;
-}
-
-+ (UIImage *)imageNamed:(NSString *)name
-{
-    NSString *path = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:name];
-    
-    return ([[NSFileManager defaultManager] fileExistsAtPath:path]) ? [OLImage imageWithContentsOfFile:path] : nil;
-}
-
-+ (UIImage *)imageWithContentsOfFile:(NSString *)path
-{
-    return [OLImage imageWithData:[NSData dataWithContentsOfFile:path]];
 }
 
 - (CGSize)size
