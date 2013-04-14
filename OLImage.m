@@ -107,10 +107,8 @@ inline static BOOL CGImageSourceContainsAnimatedGif(CGImageSourceRef imageSource
     
     if (CGImageSourceContainsAnimatedGif(imageSource)) {
         image = [[self alloc] initWithCGImageSource:imageSource scale:scale];
-    } else if (scale > 1 && [[self superclass] instancesRespondToSelector:@selector(initWithData:scale:)]) {
-        image = [super imageWithData:data scale:scale];
     } else {
-        image = [super imageWithData:data];
+        image = [super imageWithData:data scale:scale];
     }
     
     if (imageSource) {
@@ -153,10 +151,8 @@ inline static BOOL CGImageSourceContainsAnimatedGif(CGImageSourceRef imageSource
     
     if (CGImageSourceContainsAnimatedGif(imageSource)) {
         self = [self initWithCGImageSource:imageSource scale:scale];
-    } else if (scale > 1 && [[self superclass] instancesRespondToSelector:@selector(initWithData:scale:)]) {
-        self = [super initWithData:data scale:scale];
     } else {
-        self = [super initWithData:data];
+        self = [super initWithData:data scale:scale];
     }
     
     if (imageSource) {
