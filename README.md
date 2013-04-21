@@ -53,6 +53,13 @@ Now, when you create your image instances to put in the view you show do it with
 		self.imageView.image = image;
 	}
 	
+##Categories
+
+In this repo is included a category to integrate OLImage with AFNetworking's [UIImageView's](https://github.com/AFNetworking/AFNetworking/blob/master/AFNetworking/UIImageView%2BAFNetworking.h) category which provides caching and remote URL setters.
+To make use of this just import the category where you are using OLImageView with AFNetworking category.
+
+You are more than welcome to send Pull Requests with categories or subclasses that integrate OLImage with other Libraries.
+
 ##Help us make this better
 
 Found a bug? a typo? Can you make the decoding faster?. Feel free to fork it and send a pull request (or file an issue).
