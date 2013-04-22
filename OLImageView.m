@@ -39,7 +39,7 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
 - (CADisplayLink *)displayLink
 {
     if (self.superview) {
-        if (!_displayLink) {
+        if (!_displayLink && self.animatedImage) {
             _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(changeKeyframe:)];
             [_displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:self.runLoopMode];
         }
