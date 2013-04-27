@@ -62,16 +62,16 @@ inline static BOOL CGImageSourceContainsAnimatedGif(CGImageSourceRef imageSource
 
 #pragma mark - Class Methods
 
-+ (UIImage *)imageNamed:(NSString *)name
++ (id)imageNamed:(NSString *)name
 {
     NSString *path = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:name];
     
-    return ([[NSFileManager defaultManager] fileExistsAtPath:path]) ? [OLImage imageWithContentsOfFile:path] : nil;
+    return ([[NSFileManager defaultManager] fileExistsAtPath:path]) ? [self imageWithContentsOfFile:path] : nil;
 }
 
-+ (UIImage *)imageWithContentsOfFile:(NSString *)path
++ (id)imageWithContentsOfFile:(NSString *)path
 {
-    return [OLImage imageWithData:[NSData dataWithContentsOfFile:path]];
+    return [self imageWithData:[NSData dataWithContentsOfFile:path]];
 }
 
 + (id)imageWithData:(NSData *)data
