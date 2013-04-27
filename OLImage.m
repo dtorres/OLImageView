@@ -119,7 +119,11 @@ inline static BOOL CGImageSourceContainsAnimatedGif(CGImageSourceRef imageSource
     if (CGImageSourceContainsAnimatedGif(imageSource)) {
         self = [self initWithCGImageSource:imageSource scale:scale];
     } else {
-        self = [super initWithData:data scale:scale];
+        if (scale == 1.0f) {
+            self = [super initWithData:data];
+        } else {
+            self = [super initWithData:data scale:scale];
+        }
     }
     
     if (imageSource) {
