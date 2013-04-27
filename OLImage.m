@@ -76,24 +76,7 @@ inline static BOOL CGImageSourceContainsAnimatedGif(CGImageSourceRef imageSource
 
 + (id)imageWithData:(NSData *)data
 {
-    if (!data) {
-        return nil;
-    }
-    
-    CGImageSourceRef imageSource = CGImageSourceCreateWithData((__bridge CFDataRef)(data), NULL);
-    UIImage *image;
-    
-    if (CGImageSourceContainsAnimatedGif(imageSource)) {
-        image = [[self alloc] initWithCGImageSource:imageSource scale:1];
-    } else {
-        image = [super imageWithData:data];
-    }
-    
-    if (imageSource) {
-        CFRelease(imageSource);
-    }
-    
-    return image;
+    return [self imageWithData:data scale:1.0f];
 }
 
 + (id)imageWithData:(NSData *)data scale:(CGFloat)scale
@@ -118,27 +101,11 @@ inline static BOOL CGImageSourceContainsAnimatedGif(CGImageSourceRef imageSource
     return image;
 }
 
-#pragma mark - Instance Methods
+#pragma mark - Initialization methods
 
 - (id)initWithData:(NSData *)data
 {
-    if (!data) {
-        return nil;
-    }
-    
-    CGImageSourceRef imageSource = CGImageSourceCreateWithData((__bridge CFDataRef)(data), NULL);
-    
-    if (CGImageSourceContainsAnimatedGif(imageSource)) {
-        self = [self initWithCGImageSource:imageSource scale:1];
-    } else {
-        self = [super initWithData:data];
-    }
-    
-    if (imageSource) {
-        CFRelease(imageSource);
-    }
-    
-    return self;
+    return [self initWithData:data scale:1.0f];
 }
 
 - (id)initWithData:(NSData *)data scale:(CGFloat)scale
@@ -166,7 +133,7 @@ inline static BOOL CGImageSourceContainsAnimatedGif(CGImageSourceRef imageSource
 {
     self = [super init];
     if (!imageSource || !self) {
-        return self;
+        return nil;
     }
     
     CFRetain(imageSource);
@@ -204,6 +171,8 @@ inline static BOOL CGImageSourceContainsAnimatedGif(CGImageSourceRef imageSource
     
     return self;
 }
+
+#pragma mark - Compatibility methods
 
 - (CGSize)size
 {
