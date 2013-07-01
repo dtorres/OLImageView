@@ -300,6 +300,9 @@ static inline CGImageRef OLDecodedCGImageFromCGImage(CGImageRef imageRef)
 
 - (void)updateWithData:(NSData *)data final:(BOOL)final
 {
+    if (![self isPartial]) {
+        return;
+    }
     NSInteger currentlyDecodedIndex = self.images ? ([self.images count] - 1) : -1;
     CGImageSourceUpdateData(_incrementalSource, (__bridge CFDataRef)(data), final);
     NSUInteger imageCount = CGImageSourceGetCount(_incrementalSource);

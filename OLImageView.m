@@ -158,7 +158,7 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
 
 - (void)displayLayer:(CALayer *)layer
 {
-    if (!self.animatedImage) {
+    if (!self.animatedImage || [self.animatedImage.images count] == 0) {
         return;
     }
     layer.contents = (__bridge id)([[self.animatedImage.images objectAtIndex:self.currentFrameIndex] CGImage]);
