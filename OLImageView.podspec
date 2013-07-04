@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "OLImageView"
-  s.version      = "1.1.0"
+  s.version      = "1.2.0"
   s.summary      = "Animated GIFs implemented the right way."
   s.homepage     = "https://www.github.com/ondalabs/OLImageView"
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
