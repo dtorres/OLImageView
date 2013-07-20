@@ -165,31 +165,34 @@ inline static BOOL isRetinaFilePath(NSString *path)
     self.loopCount = [gifProperties[(NSString *)kCGImagePropertyGIFLoopCount] unsignedIntegerValue];
     self.images = [NSMutableArray arrayWithCapacity:numberOfFrames];
     
+    NSNull *aNull = [NSNull null];
+    for (NSUInteger i = 0; i < numberOfFrames; ++i) {
+        [self.images addObject:aNull];
+        NSTimeInterval frameDuration = CGImageSourceGetGifFrameDelay(imageSource, i);
+        self.frameDurations[i] = frameDuration;
+        self.totalDuration += frameDuration;
+    }
+    CFTimeInterval start = CFAbsoluteTimeGetCurrent();
     // Load first frame
     CGImageRef firstImage = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
-    [self.images addObject:[UIImage imageWithCGImage:firstImage scale:scale orientation:UIImageOrientationUp]];
+    [self.images replaceObjectAtIndex:0 withObject:[UIImage imageWithCGImage:firstImage scale:scale orientation:UIImageOrientationUp]];
     CFRelease(firstImage);
-    
-    NSTimeInterval firstFrameDuration = CGImageSourceGetGifFrameDelay(imageSource, 0);
-    self.frameDurations[0] = firstFrameDuration;
-    self.totalDuration = firstFrameDuration;
     
     // Asynchronously load the remaining frames
     __weak OLImage *weakSelf = self;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        for (NSUInteger i = 1; i < numberOfFrames; ++i) {
+        dispatch_apply(numberOfFrames - 1, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(size_t iter) {
+            NSUInteger i = iter + 1;
             OLImage *strongSelf = weakSelf;
             if (!strongSelf) {
-                break;
+                return;
             }
-            NSTimeInterval frameDuration = CGImageSourceGetGifFrameDelay(imageSource, i);
-            strongSelf.frameDurations[i] = frameDuration;
-            strongSelf.totalDuration += frameDuration;
             
             CGImageRef frameImageRef = CGImageSourceCreateImageAtIndex(imageSource, i, NULL);
-            [strongSelf.images addObject:[UIImage imageWithCGImage:frameImageRef scale:scale orientation:UIImageOrientationUp]];
+            [strongSelf.images replaceObjectAtIndex:i withObject:[UIImage imageWithCGImage:frameImageRef scale:scale orientation:UIImageOrientationUp]];
             CFRelease(frameImageRef);
-        }
+        });
+        NSLog(@"Fully decoded %d frames: %f", [weakSelf.images count], CFAbsoluteTimeGetCurrent()-start);
         CFRelease(imageSource);
     });
     
