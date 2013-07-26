@@ -1,28 +1,21 @@
-#OLImageView (and OLImage)
+# OLImageView (and OLImage)
+Everybody loves a good GIF. Unfortunately, Apple's implementation of UIImage doesn't support animated GIFs. OLImage and OLImageView are drop-in replacements for UIImage and UIImageView with really good support for animated GIFs.
 
-You love GIFs right? so do I!. 
-Well, as you may know Apple's implementation of UIImage doesn't support animated GIFs (Booooooo!) and that's what this classes are for.
+## Why did we do this?
+There are many other classes to do this already, but they just don't work the way they should. Most existing classes:
 
-This classes are drop-in replacements for UIImage and UIImageView respectively.
+- Divide the delay between frames evenly, all the time (even if the file specifies different per-frame delays)
+- Load frames synchronously, which freezes up the main thread (especially when loading large files) and only show anything when all the frames are loaded
 
-##Why this classes
+We tried to fix some of these issues, but we found that the experience still didn't feel quite right. After a little of digging, we found out that browsers change the frame delays on certain conditions. This implementation adopts these conditions to provide an experience that is consistent with the WebKit rendering of an animated GIF.
 
-When I created this classes there were a bunch of classes that added GIF support but had these issues:
-
-- They divided evenly the total delay between frames (Yeah, usually GIFs have even delays but when they don't...) 
-- Loaded synchronously. Which is fine except the process per frame is heavy, and only when finished the image was visible.
-
-But even having resolved those issues the experience wasn't how we are used to them.
-
-After a little of digging I found out the browsers changed the delays on certain condition. Mostly bad encoded GIFs. This implementation adopts those conditions to provide a consistent experience with the browsers.
-
-##How to use
-
-Replace UIImageView for OLImageView and add the header.
+## How to use
+Add the header and replace UIImageView with OLImageView.
 
 **Example**
 
-    //Before (in your viewController in this example)
+    // Before (in your View Controller in this example)
+    
 	- (void)loadView 
 	{
 		[super loadView];
@@ -31,10 +24,10 @@ Replace UIImageView for OLImageView and add the header.
 	}
 
 
-
-	//After
+	// After
 	
 	#import "OLImageView.h"
+	
 	- (void)loadView 
 	{
 		[super loadView];
@@ -42,8 +35,7 @@ Replace UIImageView for OLImageView and add the header.
 		[self.view addSubview:self.imageView];
 	}
 	
-No, we are not done yet.
-Now, when you create your image instances to put in the view you show do it with the data.
+Now, when you create your image instances to put in the view, you should do it with the data.
 
 **Example**
 
@@ -54,12 +46,10 @@ Now, when you create your image instances to put in the view you show do it with
 	}
 	
 ##Categories
+This repo includes a category to integrate OLImage with AFNetworking's [UIImageView category](https://github.com/AFNetworking/AFNetworking/blob/master/AFNetworking/UIImageView%2BAFNetworking.h), which provides caching and remote URL setters.
+To use this, just import the category where you will be using OLImageView with the AFNetworking category.
 
-In this repo is included a category to integrate OLImage with AFNetworking's [UIImageView's](https://github.com/AFNetworking/AFNetworking/blob/master/AFNetworking/UIImageView%2BAFNetworking.h) category which provides caching and remote URL setters.
-To make use of this just import the category where you are using OLImageView with AFNetworking category.
-
-You are more than welcome to send Pull Requests with categories or subclasses that integrate OLImage with other Libraries.
+You are more than welcome to send pull requests with categories or subclasses that integrate OLImage with other libraries.
 
 ##Help us make this better
-
-Found a bug? a typo? Can you make the decoding faster?. Feel free to fork it and send a pull request (or file an issue).
+Found a bug? A typo? Can you make the decoding faster? Feel free to fork this and send us a pull request (or file an issue).
