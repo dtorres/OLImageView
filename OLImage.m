@@ -10,6 +10,12 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "OLImage.h"
 
+//Define FLT_EPSILON because, reasons.
+//Actually, I don't know why but it seems under certain circumstances it is not defined
+#ifndef FLT_EPSILON
+#define FLT_EPSILON __FLT_EPSILON__
+#endif
+
 inline static NSTimeInterval CGImageSourceGetGifFrameDelay(CGImageSourceRef imageSource, NSUInteger index)
 {
     NSTimeInterval frameDuration = 0;
