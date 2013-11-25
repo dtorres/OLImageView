@@ -281,16 +281,23 @@ static inline CGImageRef OLDecodedCGImageFromCGImage(CGImageRef imageRef)
     return decodedImage;
 }
 
+- (instancetype)initWithIncrementalData:(NSData *)data
+{
+    self = [self init];
+    if (self) {
+        self.totalDuration = 0;
+        self.incrementalSource = CGImageSourceCreateIncremental(NULL);
+        self.images = [NSMutableArray new];
+        if (data) {
+            [self updateWithData:data];
+        }
+    }
+    return self;
+}
+
 + (instancetype)imageWithIncrementalData:(NSData *)data
 {
-    OLImage *image = [[OLImage alloc] init];
-    image.totalDuration = 0;
-    image.incrementalSource = CGImageSourceCreateIncremental(NULL);
-    image.images = [NSMutableArray new];
-    if (data) {
-        [image updateWithData:data];
-    }
-    return image;
+    return [[OLImage alloc] initWithIncrementalData:data];
 }
 
 - (void)updateWithData:(NSData *)data
