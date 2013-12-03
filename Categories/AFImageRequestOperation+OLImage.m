@@ -14,7 +14,7 @@
 
 - (void)setResponseOLImage:(UIImage *)responseImage {
     if ([self.responseData length] > 0 && [self isFinished]) {
-        [self setResponseOLImage:[OLImage imageWithData:self.responseData]];
+        [self setResponseOLImage:[OLImage imageWithData:self.responseData scale:self.imageScale]];
     }
 }
 
