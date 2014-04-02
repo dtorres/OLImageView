@@ -259,7 +259,7 @@ inline static BOOL isRetinaFilePath(NSString *path)
 @implementation OLImage (IncrementalData)
 
 //Snippet from AFNetworking
-static inline CGImageRef OLDecodedCGImageFromCGImage(CGImageRef imageRef)
+static inline CGImageRef OLCreateDecodedCGImageFromCGImage(CGImageRef imageRef)
 {
     size_t width = CGImageGetWidth(imageRef);
     size_t height = CGImageGetHeight(imageRef);
@@ -327,7 +327,7 @@ static inline CGImageRef OLDecodedCGImageFromCGImage(CGImageRef imageRef)
         self.totalDuration += delay;
         
         CGImageRef image = CGImageSourceCreateImageAtIndex(_incrementalSource, currentlyDecodedIndex, NULL);
-        CGImageRef decodedImage = OLDecodedCGImageFromCGImage(image);
+        CGImageRef decodedImage = OLCreateDecodedCGImageFromCGImage(image);
         [self.images addObject:[UIImage imageWithCGImage:decodedImage]];
         
         free(oldDelayArray);
