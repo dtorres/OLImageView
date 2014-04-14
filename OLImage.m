@@ -119,6 +119,10 @@ inline static BOOL isRetinaFilePath(NSString *path)
         image = [super imageWithData:data scale:scale];
     }
     
+    if (imageSource) {
+        CFRelease(imageSource);
+    }
+    
     return image;
 }
 
