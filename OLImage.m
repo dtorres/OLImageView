@@ -59,13 +59,24 @@ inline static BOOL isRetinaFilePath(NSString *path)
     return retinaSuffixRange.length && retinaSuffixRange.location != NSNotFound;
 }
 
+@interface OLImageSourceArray : NSArray
+
+@property (nonatomic, readonly) CGImageSourceRef imageSource;
+
+- (void)updateCount;
+
++ (instancetype)arrayWithImageSource:(CGImageSourceRef)imageSource;
++ (instancetype)arrayWithImageSource:(CGImageSourceRef)imageSource scale:(CGFloat)scale;
+
+@end
+
 @interface OLImage ()
 
-@property (nonatomic, readwrite) NSMutableArray *images;
 @property (nonatomic, readwrite) NSTimeInterval *frameDurations;
 @property (nonatomic, readwrite) NSTimeInterval totalDuration;
 @property (nonatomic, readwrite) NSUInteger loopCount;
 @property (nonatomic, readwrite) CGImageSourceRef incrementalSource;
+@property (nonatomic, readwrite) OLImageSourceArray *imageSourceArray;
 
 @end
 
@@ -106,10 +117,6 @@ inline static BOOL isRetinaFilePath(NSString *path)
         image = [[self alloc] initWithCGImageSource:imageSource scale:scale];
     } else {
         image = [super imageWithData:data scale:scale];
-    }
-    
-    if (imageSource) {
-        CFRelease(imageSource);
     }
     
     return image;
@@ -160,8 +167,6 @@ inline static BOOL isRetinaFilePath(NSString *path)
         return nil;
     }
     
-    CFRetain(imageSource);
-    
     NSUInteger numberOfFrames = CGImageSourceGetCount(imageSource);
     
     NSDictionary *imageProperties = CFBridgingRelease(CGImageSourceCopyProperties(imageSource, NULL));
@@ -169,43 +174,22 @@ inline static BOOL isRetinaFilePath(NSString *path)
     
     self.frameDurations = (NSTimeInterval *)malloc(numberOfFrames  * sizeof(NSTimeInterval));
     self.loopCount = [gifProperties[(NSString *)kCGImagePropertyGIFLoopCount] unsignedIntegerValue];
-    self.images = [NSMutableArray arrayWithCapacity:numberOfFrames];
-    
-    NSNull *aNull = [NSNull null];
     for (NSUInteger i = 0; i < numberOfFrames; ++i) {
-        [self.images addObject:aNull];
         NSTimeInterval frameDuration = CGImageSourceGetGifFrameDelay(imageSource, i);
         self.frameDurations[i] = frameDuration;
         self.totalDuration += frameDuration;
     }
-    CFTimeInterval start = CFAbsoluteTimeGetCurrent();
-    // Load first frame
-    CGImageRef firstImage = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
-    [self.images replaceObjectAtIndex:0 withObject:[UIImage imageWithCGImage:firstImage scale:scale orientation:UIImageOrientationUp]];
-    CFRelease(firstImage);
-    
-    // Asynchronously load the remaining frames
-    __weak OLImage *weakSelf = self;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        dispatch_apply(numberOfFrames - 1, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(size_t iter) {
-            NSUInteger i = iter + 1;
-            OLImage *strongSelf = weakSelf;
-            if (!strongSelf) {
-                return;
-            }
-            
-            CGImageRef frameImageRef = CGImageSourceCreateImageAtIndex(imageSource, i, NULL);
-            [strongSelf.images replaceObjectAtIndex:i withObject:[UIImage imageWithCGImage:frameImageRef scale:scale orientation:UIImageOrientationUp]];
-            CFRelease(frameImageRef);
-        });
-        NSLog(@"Fully decoded %d frames: %f", [weakSelf.images count], CFAbsoluteTimeGetCurrent()-start);
-        CFRelease(imageSource);
-    });
+    self.imageSourceArray = [OLImageSourceArray arrayWithImageSource:imageSource scale:scale];
     
     return self;
 }
 
 #pragma mark - Compatibility methods
+
+- (NSArray *)images
+{
+    return self.imageSourceArray;
+}
 
 - (CGSize)size
 {
@@ -249,9 +233,6 @@ inline static BOOL isRetinaFilePath(NSString *path)
 
 - (void)dealloc {
     free(_frameDurations);
-    if (_incrementalSource) {
-        CFRelease(_incrementalSource);
-    }
 }
 
 @end
@@ -294,8 +275,10 @@ static inline CGImageRef OLCreateDecodedCGImageFromCGImage(CGImageRef imageRef)
 {
     OLImage *image = [[OLImage alloc] init];
     image.totalDuration = 0;
-    image.incrementalSource = CGImageSourceCreateIncremental(NULL);
-    image.images = [NSMutableArray new];
+    CGImageSourceRef incrementalSource = CGImageSourceCreateIncremental(NULL);
+    image.imageSourceArray = [OLImageSourceArray arrayWithImageSource:incrementalSource];
+    image.incrementalSource = incrementalSource;
+    CFRelease(incrementalSource);
     if (data) {
         [image updateWithData:data];
     }
@@ -312,37 +295,110 @@ static inline CGImageRef OLCreateDecodedCGImageFromCGImage(CGImageRef imageRef)
     if (![self isPartial]) {
         return;
     }
-    NSInteger currentlyDecodedIndex = self.images ? ([self.images count] - 1) : -1;
+    NSUInteger oldImageCount = self.imageSourceArray.count;
+    NSInteger currentlyDecodedIndex = oldImageCount-1;
     CGImageSourceUpdateData(_incrementalSource, (__bridge CFDataRef)(data), final);
-    NSUInteger imageCount = CGImageSourceGetCount(_incrementalSource);
+    [self.imageSourceArray updateCount];
+    
+    NSUInteger imageCount = self.imageSourceArray.count;
+    if (imageCount > oldImageCount) {
+        self.frameDurations = realloc(self.frameDurations, imageCount*sizeof(NSTimeInterval));
+    }
+    
     while ((imageCount > currentlyDecodedIndex + 2) || (final && imageCount > currentlyDecodedIndex+1)) {
         currentlyDecodedIndex += 1;
         
-        NSTimeInterval delay = CGImageSourceGetGifFrameDelay(_incrementalSource, currentlyDecodedIndex);        
-        NSTimeInterval *oldDelayArray = self.frameDurations;
-        NSTimeInterval *newDelayArray = (NSTimeInterval *)malloc((currentlyDecodedIndex + 1)*sizeof(NSTimeInterval));
-        memcpy(newDelayArray, oldDelayArray, currentlyDecodedIndex*sizeof(NSTimeInterval));
-        newDelayArray[currentlyDecodedIndex] = delay;
-        self.frameDurations = newDelayArray;
+        NSTimeInterval delay = CGImageSourceGetGifFrameDelay(_incrementalSource, currentlyDecodedIndex);
+        self.frameDurations[currentlyDecodedIndex] = delay;
         self.totalDuration += delay;
-        
-        CGImageRef image = CGImageSourceCreateImageAtIndex(_incrementalSource, currentlyDecodedIndex, NULL);
-        CGImageRef decodedImage = OLCreateDecodedCGImageFromCGImage(image);
-        [self.images addObject:[UIImage imageWithCGImage:decodedImage]];
-        
-        free(oldDelayArray);
-        CGImageRelease(image);
-        CGImageRelease(decodedImage);
     }
+
     if (final) {
-        CFRelease(_incrementalSource);
-        _incrementalSource = nil;
+        _incrementalSource = NULL;
     }
 }
 
 - (BOOL)isPartial
 {
     return _incrementalSource != nil;
+}
+
+@end
+
+@interface OLImageSourceArray ()
+
+@property (nonatomic, readonly) NSCache *frameCache;
+@property (nonatomic, readwrite) NSUInteger count;
+@property (nonatomic, readonly) CGFloat scale;
+
+@end
+
+@implementation OLImageSourceArray
+
++ (instancetype)arrayWithImageSource:(CGImageSourceRef)imageSource
+{
+    return [self arrayWithImageSource:imageSource scale:1.0f];
+}
+
++ (instancetype)arrayWithImageSource:(CGImageSourceRef)imageSource scale:(CGFloat)scale
+{
+    if (!imageSource) {
+        return nil;
+    }
+    return [[self alloc] initWithImageSource:imageSource scale:scale];
+}
+
+- (instancetype)initWithImageSource:(CGImageSourceRef)imageSource scale:(CGFloat)scale
+{
+    self = [super init];
+    if (self) {
+        CFRetain(imageSource);
+        _imageSource = imageSource;
+        _frameCache = [NSCache new];
+        [_frameCache setCountLimit:10];
+        _count = 0;
+        _scale = scale;
+        [self updateCount];
+    }
+    return self;
+}
+
+- (id)objectAtIndex:(NSUInteger)idx
+{
+    id object = [self.frameCache objectForKey:@(idx)];
+    if (!object) {
+        object = [self _objectAtIndex:idx];
+    }
+    return object;
+}
+
+- (BOOL)containsObject:(id)anObject
+{
+    return [[(id)self.frameCache allObjects] containsObject:anObject];
+}
+
+- (id)_objectAtIndex:(NSUInteger)idx
+{
+    CGImageRef frameImageRef = CGImageSourceCreateImageAtIndex(self.imageSource, idx, NULL);
+    UIImage *image = [UIImage imageWithCGImage:frameImageRef scale:self.scale orientation:UIImageOrientationUp];
+    CGImageRelease(frameImageRef);
+    [self.frameCache setObject:image forKey:@(idx)];
+    return image;
+}
+
+- (void)updateCount
+{
+    self.count = CGImageSourceGetCount(self.imageSource);
+    NSUInteger cacheLimit = self.frameCache.countLimit;
+    if (self.count > 0) {
+        cacheLimit = MIN(self.count, 10);
+    }
+    [self.frameCache setCountLimit:cacheLimit];
+}
+
+- (void)dealloc
+{
+    CFRelease(_imageSource);
 }
 
 @end
