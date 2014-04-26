@@ -282,6 +282,9 @@ static inline CGImageRef OLCreateDecodedCGImageFromCGImage(CGImageRef imageRef)
     CGImageSourceRef incrementalSource = CGImageSourceCreateIncremental(NULL);
     image.imageSourceArray = [OLImageSourceArray arrayWithImageSource:incrementalSource];
     image.incrementalSource = incrementalSource;
+    image.totalDuration = 0;
+    image.frameDurations = calloc(1, sizeof(NSTimeInterval));
+    
     CFRelease(incrementalSource);
     if (data) {
         [image updateWithData:data];
@@ -299,27 +302,31 @@ static inline CGImageRef OLCreateDecodedCGImageFromCGImage(CGImageRef imageRef)
     if (![self isPartial]) {
         return;
     }
-    NSUInteger oldImageCount = self.imageSourceArray.count;
-    NSInteger currentlyDecodedIndex = oldImageCount-1;
-    CGImageSourceUpdateData(_incrementalSource, (__bridge CFDataRef)(data), final);
+    
+
+    CGImageSourceUpdateData(_incrementalSource, (__bridge CFDataRef)([data copy]), final);
     [self.imageSourceArray updateCount];
-    
-    NSUInteger imageCount = self.imageSourceArray.count;
-    if (imageCount > oldImageCount) {
-        self.frameDurations = realloc(self.frameDurations, imageCount*sizeof(NSTimeInterval));
-    }
-    
-    while ((imageCount > currentlyDecodedIndex + 2) || (final && imageCount > currentlyDecodedIndex+1)) {
-        currentlyDecodedIndex += 1;
-        
-        NSTimeInterval delay = CGImageSourceGetGifFrameDelay(_incrementalSource, currentlyDecodedIndex);
-        self.frameDurations[currentlyDecodedIndex] = delay;
-        self.totalDuration += delay;
-    }
+    [self updateDurations];
 
     if (final) {
         _incrementalSource = NULL;
     }
+}
+
+- (void)updateDurations
+{
+    NSUInteger count = self.imageSourceArray.count;
+    NSTimeInterval totalDuration = 0;
+    NSTimeInterval *durations = calloc(count, sizeof(NSTimeInterval));
+    for (int i = 0; i < count; i++) {
+        NSTimeInterval delay = CGImageSourceGetGifFrameDelay(_incrementalSource, i);
+        durations[i] = delay;
+        totalDuration += delay;
+    }
+    
+    free(_frameDurations);
+    _frameDurations = durations;
+    self.totalDuration = totalDuration;
 }
 
 - (BOOL)isPartial
@@ -386,13 +393,19 @@ static inline CGImageRef OLCreateDecodedCGImageFromCGImage(CGImageRef imageRef)
     CGImageRef frameImageRef = CGImageSourceCreateImageAtIndex(self.imageSource, idx, NULL);
     UIImage *image = [UIImage imageWithCGImage:frameImageRef scale:self.scale orientation:UIImageOrientationUp];
     CGImageRelease(frameImageRef);
-    [self.frameCache setObject:image forKey:@(idx)];
+    if (image) {
+        [self.frameCache setObject:image forKey:@(idx)];
+    }
     return image;
 }
 
 - (void)updateCount
 {
-    self.count = CGImageSourceGetCount(self.imageSource);
+    NSInteger count = CGImageSourceGetCount(self.imageSource);
+    if (CGImageSourceGetStatus(self.imageSource) != kCGImageStatusComplete) {
+        count -=2;
+    }
+    self.count = MAX(0, count);
     NSUInteger cacheLimit = self.frameCache.countLimit;
     if (self.count > 0) {
         cacheLimit = MIN(self.count, 10);
