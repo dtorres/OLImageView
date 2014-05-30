@@ -10,6 +10,9 @@
 #import "OLImageView.h"
 #import "OLImage.h"
 
+#import <AFNetworking/UIImageView+AFNetworking.h>
+#import "OLImageResponseSerializer.h"
+
 #define OLDemoShowAnimationTickers 0
 
 @implementation OLAppDelegate
@@ -60,8 +63,17 @@
     }
 #endif
     
+    UIViewController *magicAnimatedVCnet = [UIViewController new];
+    magicAnimatedVCnet.title = @"OLImageView+AFNet2";
+    UIImageView *imgV = [UIImageView new];
+    imgV.imageResponseSerializer = [OLImageResponseSerializer new];
+    
+    magicAnimatedVCnet.view = imgV;
+    
+    [imgV setImageWithURL:[NSURL URLWithString:@"http://24.media.tumblr.com/9a7e2652afde1fbe7b1d2e978be64765/tumblr_mke4w2g7C31qz8x31o1_400.gif"]];
+    
     UITabBarController *tbc = [[UITabBarController alloc] init];
-    [tbc setViewControllers:@[normalAnimatedVC, magicAnimatedVC]];
+    [tbc setViewControllers:@[normalAnimatedVC, magicAnimatedVC, magicAnimatedVCnet]];
     
     self.window.rootViewController = tbc;
     self.window.backgroundColor = [UIColor whiteColor];

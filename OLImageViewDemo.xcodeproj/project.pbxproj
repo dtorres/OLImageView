@@ -50,6 +50,8 @@
 		5A796D5015F7B077008A8FBF /* BB0.png in Resources */ = {isa = PBXBuildFile; fileRef = 5A796D4F15F7B077008A8FBF /* BB0.png */; };
 		5A8D914215F844F80078E2B4 /* fdgdf.gif in Resources */ = {isa = PBXBuildFile; fileRef = 5A8D914115F844F80078E2B4 /* fdgdf.gif */; };
 		5A98411C168010900050D42D /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5A98411B168010900050D42D /* Default-568h@2x.png */; };
+		5ACA4EDC1938636D00A6B8D3 /* OLImageResponseSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACA4EDB1938636D00A6B8D3 /* OLImageResponseSerializer.m */; };
+		F2B924CC4DF949A082919C1A /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8B873DBE54D4E0AB5CC12D3 /* libPods.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -65,6 +67,7 @@
 		07BB9C5E170696E800E68171 /* 10.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = 10.gif; sourceTree = "<group>"; };
 		07CCC8E8170524130062371E /* AFImageRequestOperation+OLImage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "AFImageRequestOperation+OLImage.h"; path = "Categories/AFImageRequestOperation+OLImage.h"; sourceTree = SOURCE_ROOT; };
 		07CCC8E9170524130062371E /* AFImageRequestOperation+OLImage.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "AFImageRequestOperation+OLImage.m"; path = "Categories/AFImageRequestOperation+OLImage.m"; sourceTree = SOURCE_ROOT; };
+		3167AD957051458C96071172 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
 		5A053BE115F844060014BF82 /* BLEH.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = BLEH.gif; sourceTree = "<group>"; };
 		5A1F4BB9165C449E00B61FCF /* OLImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OLImage.h; sourceTree = SOURCE_ROOT; };
 		5A1F4BBA165C449E00B61FCF /* OLImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OLImage.m; sourceTree = SOURCE_ROOT; };
@@ -104,6 +107,9 @@
 		5A796D4F15F7B077008A8FBF /* BB0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BB0.png; sourceTree = "<group>"; };
 		5A8D914115F844F80078E2B4 /* fdgdf.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = fdgdf.gif; sourceTree = "<group>"; };
 		5A98411B168010900050D42D /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		5ACA4EDA1938636D00A6B8D3 /* OLImageResponseSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OLImageResponseSerializer.h; sourceTree = "<group>"; };
+		5ACA4EDB1938636D00A6B8D3 /* OLImageResponseSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OLImageResponseSerializer.m; sourceTree = "<group>"; };
+		D8B873DBE54D4E0AB5CC12D3 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +123,7 @@
 				5A796D0215F79EC7008A8FBF /* UIKit.framework in Frameworks */,
 				5A796D0415F79EC7008A8FBF /* Foundation.framework in Frameworks */,
 				5A796D0615F79EC7008A8FBF /* CoreGraphics.framework in Frameworks */,
+				F2B924CC4DF949A082919C1A /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -179,10 +186,12 @@
 		5A796CF215F79EC7008A8FBF = {
 			isa = PBXGroup;
 			children = (
+				5ACA4ED91938636D00A6B8D3 /* AFNetworking */,
 				07CCC8E6170523B80062371E /* OLImageView */,
 				5A796D0715F79EC7008A8FBF /* OLImageViewDemo */,
 				5A796D0015F79EC7008A8FBF /* Frameworks */,
 				5A796CFE15F79EC7008A8FBF /* Products */,
+				3167AD957051458C96071172 /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -203,6 +212,7 @@
 				5A796D0115F79EC7008A8FBF /* UIKit.framework */,
 				5A796D0315F79EC7008A8FBF /* Foundation.framework */,
 				5A796D0515F79EC7008A8FBF /* CoreGraphics.framework */,
+				D8B873DBE54D4E0AB5CC12D3 /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -229,6 +239,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		5ACA4ED91938636D00A6B8D3 /* AFNetworking */ = {
+			isa = PBXGroup;
+			children = (
+				5ACA4EDA1938636D00A6B8D3 /* OLImageResponseSerializer.h */,
+				5ACA4EDB1938636D00A6B8D3 /* OLImageResponseSerializer.m */,
+			);
+			path = AFNetworking;
+			sourceTree = SOURCE_ROOT;
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -236,9 +255,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5A796D1515F79EC8008A8FBF /* Build configuration list for PBXNativeTarget "OLImageViewDemo" */;
 			buildPhases = (
+				0E63FB56DF2A4928818EC1E9 /* Check Pods Manifest.lock */,
 				5A796CF915F79EC7008A8FBF /* Sources */,
 				5A796CFA15F79EC7008A8FBF /* Frameworks */,
 				5A796CFB15F79EC7008A8FBF /* Resources */,
+				1EAA632824374C8989B9ABE2 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -319,11 +340,45 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		0E63FB56DF2A4928818EC1E9 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		1EAA632824374C8989B9ABE2 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		5A796CF915F79EC7008A8FBF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5ACA4EDC1938636D00A6B8D3 /* OLImageResponseSerializer.m in Sources */,
 				5A796D0E15F79EC8008A8FBF /* main.m in Sources */,
 				5A796D1215F79EC8008A8FBF /* OLAppDelegate.m in Sources */,
 				5A1F4BBD165C449E00B61FCF /* OLImage.m in Sources */,
@@ -376,7 +431,8 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -406,7 +462,7 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = YES;
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -416,6 +472,7 @@
 		};
 		5A796D1615F79EC8008A8FBF /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3167AD957051458C96071172 /* Pods.xcconfig */;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OLImageViewDemo/OLImageViewDemo-Prefix.pch";
@@ -427,6 +484,7 @@
 		};
 		5A796D1715F79EC8008A8FBF /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 3167AD957051458C96071172 /* Pods.xcconfig */;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OLImageViewDemo/OLImageViewDemo-Prefix.pch";
