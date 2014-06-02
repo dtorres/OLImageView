@@ -25,6 +25,6 @@ Pod::Spec.new do |s|
     s.platform = :ios, '6.0'
     ss.dependency 'OLImageView/Core'
     ss.dependency 'AFNetworking', '~> 2.0'
-    ss.source_files = "AFNetworking/OLImageResponseSerializer.{h,m}"
+    ss.source_files = "AFNetworking/OL*.{h,m}"
   end
 end
