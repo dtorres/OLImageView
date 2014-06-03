@@ -339,7 +339,7 @@ static inline CGImageRef OLCreateDecodedCGImageFromCGImage(CGImageRef imageRef)
 @interface OLImageSourceArray ()
 
 @property (nonatomic, readonly) NSCache *frameCache;
-@property (nonatomic, readwrite) NSUInteger count;
+@property (nonatomic) NSUInteger frameCount;
 @property (nonatomic, readonly) CGFloat scale;
 
 @end
@@ -367,11 +367,16 @@ static inline CGImageRef OLCreateDecodedCGImageFromCGImage(CGImageRef imageRef)
         _imageSource = imageSource;
         _frameCache = [NSCache new];
         [_frameCache setCountLimit:10];
-        _count = 0;
+        _frameCount = 0;
         _scale = scale;
         [self updateCount];
     }
     return self;
+}
+
+- (NSUInteger)count
+{
+    return self.frameCount;
 }
 
 - (id)objectAtIndex:(NSUInteger)idx
@@ -405,10 +410,10 @@ static inline CGImageRef OLCreateDecodedCGImageFromCGImage(CGImageRef imageRef)
     if (CGImageSourceGetStatus(self.imageSource) != kCGImageStatusComplete) {
         count -=2;
     }
-    self.count = MAX(0, count);
+    self.frameCount = MAX(0, count);
     NSUInteger cacheLimit = self.frameCache.countLimit;
-    if (self.count > 0) {
-        cacheLimit = MIN(self.count, 10);
+    if (self.frameCount > 0) {
+        cacheLimit = MIN(self.frameCount, 10);
     }
     [self.frameCache setCountLimit:cacheLimit];
 }
