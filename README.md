@@ -45,9 +45,20 @@ Now, when you create your image instances to put in the view, you should do it w
 		self.imageView.image = image;
 	}
 	
-##Categories
-This repo includes a category to integrate OLImage with AFNetworking's [UIImageView category](https://github.com/AFNetworking/AFNetworking/blob/master/AFNetworking/UIImageView%2BAFNetworking.h), which provides caching and remote URL setters.
+##Integration with other libs
+###AFNetworking
+This repo includes a category to integrate OLImage with AFNetworking v1.x [UIImageView category](https://github.com/AFNetworking/AFNetworking/blob/1.x/AFNetworking/UIImageView+AFNetworking.h), which provides caching and remote URL setters.
 To use this, just import the category where you will be using OLImageView with the AFNetworking category.
+
+Users of AFNetworking 2.x can use any of the two provided image reponse serializers. `OLImageResponseSerializer` is a drop-in replacement for the standard AFNetworking serializer, which simply creates OLImage instances for every data:
+
+    imageView.imageResponseSerializer = [[OLImageResponseSerializer alloc] init];
+
+Those who want to keep default `AFImageResponseSerializer` behavior or need to chain many serializers, there's a strict one, only accepting image/gif: `OLImageStrictResponseSerializer`. Serializer chaining might look like this:
+
+    imageView.imageResponseSerializer =
+        [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:
+            @[[[OLImageStrictResponseSerializer alloc] init], imageView.imageResponseSerializer]];
 
 You are more than welcome to send pull requests with categories or subclasses that integrate OLImage with other libraries.
 
