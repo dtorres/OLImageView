@@ -51,6 +51,7 @@
 		5A8D914215F844F80078E2B4 /* fdgdf.gif in Resources */ = {isa = PBXBuildFile; fileRef = 5A8D914115F844F80078E2B4 /* fdgdf.gif */; };
 		5A98411C168010900050D42D /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5A98411B168010900050D42D /* Default-568h@2x.png */; };
 		5ACA4EDC1938636D00A6B8D3 /* OLImageResponseSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ACA4EDB1938636D00A6B8D3 /* OLImageResponseSerializer.m */; };
+		9CFBBE94194EE9D100DBE3AE /* OLImageStrictResponseSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CFBBE93194EE9D100DBE3AE /* OLImageStrictResponseSerializer.m */; };
 		F2B924CC4DF949A082919C1A /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D8B873DBE54D4E0AB5CC12D3 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -109,6 +110,8 @@
 		5A98411B168010900050D42D /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		5ACA4EDA1938636D00A6B8D3 /* OLImageResponseSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OLImageResponseSerializer.h; sourceTree = "<group>"; };
 		5ACA4EDB1938636D00A6B8D3 /* OLImageResponseSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OLImageResponseSerializer.m; sourceTree = "<group>"; };
+		9CFBBE92194EE9D100DBE3AE /* OLImageStrictResponseSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OLImageStrictResponseSerializer.h; sourceTree = "<group>"; };
+		9CFBBE93194EE9D100DBE3AE /* OLImageStrictResponseSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OLImageStrictResponseSerializer.m; sourceTree = "<group>"; };
 		D8B873DBE54D4E0AB5CC12D3 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -244,6 +247,8 @@
 			children = (
 				5ACA4EDA1938636D00A6B8D3 /* OLImageResponseSerializer.h */,
 				5ACA4EDB1938636D00A6B8D3 /* OLImageResponseSerializer.m */,
+				9CFBBE92194EE9D100DBE3AE /* OLImageStrictResponseSerializer.h */,
+				9CFBBE93194EE9D100DBE3AE /* OLImageStrictResponseSerializer.m */,
 			);
 			path = AFNetworking;
 			sourceTree = SOURCE_ROOT;
@@ -378,6 +383,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9CFBBE94194EE9D100DBE3AE /* OLImageStrictResponseSerializer.m in Sources */,
 				5ACA4EDC1938636D00A6B8D3 /* OLImageResponseSerializer.m in Sources */,
 				5A796D0E15F79EC8008A8FBF /* main.m in Sources */,
 				5A796D1215F79EC8008A8FBF /* OLAppDelegate.m in Sources */,

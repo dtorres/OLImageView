@@ -12,6 +12,7 @@
 
 #import <AFNetworking/UIImageView+AFNetworking.h>
 #import "OLImageResponseSerializer.h"
+#import "OLImageStrictResponseSerializer.h"
 
 #define OLDemoShowAnimationTickers 0
 
@@ -67,11 +68,21 @@
     magicAnimatedVCnet.title = @"OLImageView+AFNet2";
     UIImageView *imgV = [UIImageView new];
     imgV.imageResponseSerializer = [OLImageResponseSerializer new];
-    
-    magicAnimatedVCnet.view = imgV;
-    
+    imgV.frame = CGRectMake(0, 0, 320, 240);
+    [magicAnimatedVCnet.view addSubview:imgV];
+
+    // First image uses easy one-for-all serializer and is suitable for all images, losing some AFNetworking behavior
     [imgV setImageWithURL:[NSURL URLWithString:@"http://24.media.tumblr.com/9a7e2652afde1fbe7b1d2e978be64765/tumblr_mke4w2g7C31qz8x31o1_400.gif"]];
-    
+
+    imgV = [UIImageView new];
+    AFCompoundResponseSerializer *compoundSerializer = [AFCompoundResponseSerializer compoundSerializerWithResponseSerializers:@[[OLImageStrictResponseSerializer new], imgV.imageResponseSerializer]];
+    imgV.imageResponseSerializer = compoundSerializer;
+    imgV.frame = CGRectMake(0, 240, 320, 240);
+    [magicAnimatedVCnet.view addSubview:imgV];
+
+    // Second image uses compound serializer, is suitable for both gifs and images and support any number of serializers
+    [imgV setImageWithURL:[NSURL URLWithString:@"http://24.media.tumblr.com/9a7e2652afde1fbe7b1d2e978be64765/tumblr_mke4w2g7C31qz8x31o1_400.gif"]];
+
     UITabBarController *tbc = [[UITabBarController alloc] init];
     [tbc setViewControllers:@[normalAnimatedVC, magicAnimatedVC, magicAnimatedVCnet]];
     
