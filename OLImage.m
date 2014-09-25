@@ -88,9 +88,55 @@ inline static BOOL isRetinaFilePath(NSString *path)
 
 + (id)imageNamed:(NSString *)name
 {
-    NSString *path = [[[NSBundle mainBundle] bundlePath] stringByAppendingPathComponent:name];
+    NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"lastPathComponent contains[cd] %@", name];
     
-    return ([[NSFileManager defaultManager] fileExistsAtPath:path]) ? [self imageWithContentsOfFile:path] : nil;
+    NSURL *bundleURL = [[NSBundle mainBundle] bundleURL];
+    NSArray *paths = [[NSFileManager defaultManager] contentsOfDirectoryAtURL:bundleURL includingPropertiesForKeys:[NSArray array] options:0 error:NULL];
+    NSArray *namedPaths = [paths filteredArrayUsingPredicate:namePredicate];
+    
+    if (namedPaths.count > 1) {
+        NSPredicate *gifPredicate = [NSPredicate predicateWithFormat:@"pathExtension contains[cd] %@", @"gif"];
+        NSArray *gifPaths = [namedPaths filteredArrayUsingPredicate:gifPredicate];
+        if (gifPaths.count > 0) {
+            namedPaths = gifPaths;
+        }
+    }
+    
+    NSURL *fileURL = nil;
+    if (namedPaths.count > 1) {
+        CGFloat fileURLScale = CGFLOAT_MIN;
+        CGFloat targetScale = [UIScreen mainScreen].scale;
+        
+        if ([[UIScreen mainScreen] respondsToSelector:@selector(nativeScale)]) {
+            targetScale = [UIScreen mainScreen].nativeScale; //This property returns @3x
+        }
+        
+        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"@([0-9]+)x\\." options:NSRegularExpressionCaseInsensitive error:NULL];
+        
+        for (NSURL *aFileURL in namedPaths) {
+            NSString *filename = [aFileURL lastPathComponent];
+            NSTextCheckingResult *result = [regex firstMatchInString:filename options:0 range:NSMakeRange(0, filename.length)];
+            if (result.numberOfRanges > 1) {
+                CGFloat foundScale = [[filename substringWithRange:[result rangeAtIndex:1]] floatValue];
+                if (foundScale > fileURLScale && foundScale <= targetScale) {
+                    fileURLScale = foundScale;
+                    fileURL = aFileURL;
+                }
+                
+                if (foundScale == targetScale) {
+                    break;
+                }
+            }
+        }
+        
+        if (fileURL == nil) {
+            fileURL = [namedPaths lastObject];
+        }
+    } else if (namedPaths.count == 1) {
+        fileURL = namedPaths.lastObject;
+    }
+    
+    return [self imageWithContentsOfFile:fileURL.path];
 }
 
 + (id)imageWithContentsOfFile:(NSString *)path

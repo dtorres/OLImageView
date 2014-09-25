@@ -36,7 +36,7 @@
     [Aimv addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)]];
     [magicAnimatedVC.view addSubview:Aimv];
     
-    Aimv = [[OLImageView alloc] initWithImage:[OLImage imageNamed:@"BLEH.gif"]];
+    Aimv = [[OLImageView alloc] initWithImage:[OLImage imageNamed:@"google-io"]];
     [Aimv setFrame:CGRectMake(0, 160, 160, 160)];
     [Aimv setUserInteractionEnabled:YES];
     [Aimv addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)]];
