@@ -103,8 +103,8 @@ inline static BOOL isRetinaFilePath(NSString *path)
     }
     
     NSURL *fileURL = nil;
+    CGFloat fileURLScale = -1;
     if (namedPaths.count > 1) {
-        CGFloat fileURLScale = CGFLOAT_MIN;
         CGFloat targetScale = [UIScreen mainScreen].scale;
         
         if ([[UIScreen mainScreen] respondsToSelector:@selector(nativeScale)]) {
@@ -136,7 +136,12 @@ inline static BOOL isRetinaFilePath(NSString *path)
         fileURL = namedPaths.lastObject;
     }
     
-    return [self imageWithContentsOfFile:fileURL.path];
+    if (fileURLScale < 0) {
+        fileURLScale = 1;
+    }
+    
+    return [self imageWithData:[NSData dataWithContentsOfURL:fileURL]
+                         scale:fileURLScale];
 }
 
 + (id)imageWithContentsOfFile:(NSString *)path
