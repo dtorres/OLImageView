@@ -88,6 +88,11 @@ inline static BOOL isRetinaFilePath(NSString *path)
 
 + (id)imageNamed:(NSString *)name
 {
+    NSString *requestedExtension = [name pathExtension];
+    if (requestedExtension) {
+        name = [name substringWithRange:NSMakeRange(0, name.length-(requestedExtension.length+1))];//ext + dot
+    }
+    
     NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"lastPathComponent contains[cd] %@", name];
     
     NSURL *bundleURL = [[NSBundle mainBundle] bundleURL];
@@ -95,10 +100,11 @@ inline static BOOL isRetinaFilePath(NSString *path)
     NSArray *namedPaths = [paths filteredArrayUsingPredicate:namePredicate];
     
     if (namedPaths.count > 1) {
-        NSPredicate *gifPredicate = [NSPredicate predicateWithFormat:@"pathExtension contains[cd] %@", @"gif"];
-        NSArray *gifPaths = [namedPaths filteredArrayUsingPredicate:gifPredicate];
-        if (gifPaths.count > 0) {
-            namedPaths = gifPaths;
+        NSString *extension = requestedExtension ? : @"gif";
+        NSPredicate *extPredicate = [NSPredicate predicateWithFormat:@"pathExtension contains[cd] %@", extension];
+        NSArray *extPaths = [namedPaths filteredArrayUsingPredicate:extPredicate];
+        if (extPaths.count > 0) {
+            namedPaths = extPaths;
         }
     }
     
@@ -113,7 +119,7 @@ inline static BOOL isRetinaFilePath(NSString *path)
         
         NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"@([0-9]+)x\\." options:NSRegularExpressionCaseInsensitive error:NULL];
         
-        for (NSURL *aFileURL in namedPaths) {
+        for (NSURL *aFileURL in namedPaths.reverseObjectEnumerator) {
             NSString *filename = [aFileURL lastPathComponent];
             NSTextCheckingResult *result = [regex firstMatchInString:filename options:0 range:NSMakeRange(0, filename.length)];
             if (result.numberOfRanges > 1) {
