@@ -113,9 +113,11 @@ inline static BOOL isRetinaFilePath(NSString *path)
     if (namedPaths.count > 1) {
         CGFloat targetScale = [UIScreen mainScreen].scale;
         
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
         if ([[UIScreen mainScreen] respondsToSelector:@selector(nativeScale)]) {
             targetScale = [UIScreen mainScreen].nativeScale; //This property returns @3x
         }
+#endif
         
         NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"@([0-9]+)x\\." options:NSRegularExpressionCaseInsensitive error:NULL];
         
