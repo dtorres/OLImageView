@@ -39,7 +39,7 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
 - (CADisplayLink *)displayLink
 {
     if (self.superview) {
-        if (!_displayLink && self.animatedImage) {
+		if (!_displayLink && self.animatedImage && [self delegateShouldStartAnimating]) {
             _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(changeKeyframe:)];
             [_displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:self.runLoopMode];
         }
@@ -131,8 +131,8 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
     }
     
     self.loopCountdown = self.animatedImage.loopCount ?: NSUIntegerMax;
-    
-    self.displayLink.paused = NO;
+	
+	self.displayLink.paused = ! [self delegateShouldStartAnimating];
 }
 
 - (void)changeKeyframe:(CADisplayLink *)displayLink
@@ -150,6 +150,7 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
                 return;
             }
             self.currentFrameIndex = 0;
+			[self delegateDidLoop];
         }
         self.currentFrameIndex = MIN(self.currentFrameIndex, [self.animatedImage.images count] - 1);
         [self.layer setNeedsDisplay];
@@ -209,4 +210,20 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
     return self.image.size;
 }
 
+#pragma mark - delegation
+- (BOOL)delegateShouldStartAnimating {
+
+	if (self.delegate && [self.delegate respondsToSelector:@selector(olImageViewShouldStartAnimating:)]) {
+		return [self.delegate olImageViewShouldStartAnimating:self];
+	} else {
+		return YES;
+	}
+}
+
+- (void)delegateDidLoop {
+	
+	if (self.delegate && [self.delegate respondsToSelector:@selector(olImageViewDidLoop::)]) {
+		[self.delegate olImageViewDidLoop:self];
+	}
+}
 @end

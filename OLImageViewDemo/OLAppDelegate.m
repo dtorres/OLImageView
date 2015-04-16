@@ -14,9 +14,22 @@
 #import "OLImageResponseSerializer.h"
 #import "OLImageStrictResponseSerializer.h"
 
+#import "OLImageViewDelegate.h"
+
 #define OLDemoShowAnimationTickers 0
 
+@interface OLAppDelegate ()<OLImageViewDelegate>
+
+@property (nonatomic, getter=isRunning) BOOL running;
+
+@end
+
 @implementation OLAppDelegate
+
+-(BOOL)olImageViewShouldStartAnimating:(OLImageView *)imageView {
+
+	return self.isRunning;
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -35,25 +48,26 @@
     [Aimv setUserInteractionEnabled:YES];
     [Aimv addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)]];
     [magicAnimatedVC.view addSubview:Aimv];
-    
+
     Aimv = [[OLImageView alloc] initWithImage:[OLImage imageNamed:@"google-io"]];
     [Aimv setFrame:CGRectMake(0, 160, 160, 160)];
     [Aimv setUserInteractionEnabled:YES];
     [Aimv addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)]];
     [magicAnimatedVC.view addSubview:Aimv];
-    
+
     Aimv = [[OLImageView alloc] initWithImage:[OLImage imageNamed:@"fdgdf.gif"]];
     [Aimv setFrame:CGRectMake(160, 0, 160, 160)];
     [Aimv setUserInteractionEnabled:YES];
     [Aimv addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)]];
     [magicAnimatedVC.view addSubview:Aimv];
-    
+
     Aimv = [[OLImageView alloc] initWithImage:[OLImage imageNamed:@"AA.gif"]];
+	Aimv.delegate = self;
     [Aimv setFrame:CGRectMake(160, 160, 160, 160)];
     [Aimv setUserInteractionEnabled:YES];
     [Aimv addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)]];
     [magicAnimatedVC.view addSubview:Aimv];
-    
+
 #if OLDemoShowAnimationTickers
     // GIFs from http://blog.fenrir-inc.com/us/2012/02/theyre-different-how-to-match-the-animation-rate-of-gif-files-accross-browsers.html
     for (NSUInteger i = 1; i <= 10; i++) {
@@ -96,10 +110,12 @@
 - (void)handleTap:(UITapGestureRecognizer *)gestRecon
 {
     OLImageView *imageView = (OLImageView *)gestRecon.view;
-    if (imageView.isAnimating) {
+    if (self.isRunning) {
+		self.running = NO;
         NSLog(@"STOP");
         [imageView stopAnimating];
     } else {
+		self.running = YES;
          NSLog(@"START");
         [imageView startAnimating];
     }
