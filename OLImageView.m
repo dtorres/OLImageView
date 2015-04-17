@@ -222,7 +222,7 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
 
 - (void)delegateDidLoop {
 	
-	if (self.delegate && [self.delegate respondsToSelector:@selector(olImageViewDidLoop::)]) {
+	if (self.delegate && [self.delegate respondsToSelector:@selector(olImageViewDidLoop:)]) {
 		[self.delegate olImageViewDidLoop:self];
 	}
 }
