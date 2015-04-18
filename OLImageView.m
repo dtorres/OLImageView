@@ -10,7 +10,12 @@
 #import "OLImage.h"
 #import <QuartzCore/QuartzCore.h>
 
-@interface OLImageView ()
+@interface OLImageView () {
+    struct {
+        unsigned int didLoop : 1;
+        unsigned int shouldStartAnimating : 1;
+    } _delegateFlags;
+}
 
 @property (nonatomic, strong) OLImage *animatedImage;
 @property (nonatomic, strong) CADisplayLink *displayLink;
@@ -39,7 +44,7 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
 - (CADisplayLink *)displayLink
 {
     if (self.superview) {
-		if (!_displayLink && self.animatedImage && [self delegateShouldStartAnimating]) {
+        if (!_displayLink && self.animatedImage && [self delegateShouldStartAnimating]) {
             _displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(changeKeyframe:)];
             [_displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:self.runLoopMode];
         }
@@ -68,6 +73,16 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
         
         [self startAnimating];
     }
+}
+
+- (void)setDelegate:(id<OLImageViewDelegate>)delegate
+{
+    if (delegate == _delegate) {
+        return;
+    }
+    _delegate = delegate;
+    _delegateFlags.didLoop = [delegate respondsToSelector:@selector(imageViewDidLoop:)];
+    _delegateFlags.shouldStartAnimating = [delegate respondsToSelector:@selector(imageViewShouldStartAnimating:)];
 }
 
 - (void)setImage:(UIImage *)image
@@ -131,8 +146,8 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
     }
     
     self.loopCountdown = self.animatedImage.loopCount ?: NSUIntegerMax;
-	
-	self.displayLink.paused = ! [self delegateShouldStartAnimating];
+    
+    self.displayLink.paused = ! [self delegateShouldStartAnimating];
 }
 
 - (void)changeKeyframe:(CADisplayLink *)displayLink
@@ -150,7 +165,7 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
                 return;
             }
             self.currentFrameIndex = 0;
-			[self delegateDidLoop];
+            [self delegateDidLoop];
         }
         self.currentFrameIndex = MIN(self.currentFrameIndex, [self.animatedImage.images count] - 1);
         [self.layer setNeedsDisplay];
@@ -171,11 +186,11 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
     if (self.window) {
         [self startAnimating];
     } else {
-       dispatch_async(dispatch_get_main_queue(), ^{
-           if (!self.window) {
-               [self stopAnimating];
-           }
-       });
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (!self.window) {
+                [self stopAnimating];
+            }
+        });
     }
 }
 
@@ -212,18 +227,18 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
 
 #pragma mark - delegation
 - (BOOL)delegateShouldStartAnimating {
-
-	if (self.delegate && [self.delegate respondsToSelector:@selector(olImageViewShouldStartAnimating:)]) {
-		return [self.delegate olImageViewShouldStartAnimating:self];
-	} else {
-		return YES;
-	}
+    
+    if (self.delegate && _delegateFlags.shouldStartAnimating) {
+        return [self.delegate imageViewShouldStartAnimating:self];
+    } else {
+        return YES;
+    }
 }
 
 - (void)delegateDidLoop {
-	
-	if (self.delegate && [self.delegate respondsToSelector:@selector(olImageViewDidLoop:)]) {
-		[self.delegate olImageViewDidLoop:self];
-	}
+    
+    if (self.delegate && _delegateFlags.didLoop) {
+        [self.delegate imageViewDidLoop:self];
+    }
 }
 @end

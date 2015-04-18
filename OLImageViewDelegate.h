@@ -14,8 +14,8 @@
 
 @optional
 
-- (BOOL)olImageViewShouldStartAnimating:(OLImageView *)imageView;
+- (BOOL)imageViewShouldStartAnimating:(OLImageView *)imageView;
 
-- (void)olImageViewDidLoop:(OLImageView *)imageView;
+- (void)imageViewDidLoop:(OLImageView *)imageView;
 
 @end
