@@ -10,6 +10,12 @@
 #import <objc/runtime.h>
 #import "OLImage.h"
 
+@interface AFImageRequestOperation (privateAPI)
+
+- (void)setResponseImage:(UIImage *)image;
+
+@end
+
 @implementation AFImageRequestOperation (OLImage)
 
 - (void)setResponseOLImage:(UIImage *)responseImage {
