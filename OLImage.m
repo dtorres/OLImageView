@@ -302,38 +302,6 @@ inline static BOOL isRetinaFilePath(NSString *path)
 
 @implementation OLImage (IncrementalData)
 
-//Snippet from AFNetworking
-static inline CGImageRef OLCreateDecodedCGImageFromCGImage(CGImageRef imageRef)
-{
-    size_t width = CGImageGetWidth(imageRef);
-    size_t height = CGImageGetHeight(imageRef);
-    size_t bitsPerComponent = CGImageGetBitsPerComponent(imageRef);
-    size_t bytesPerRow = 0; // CGImageGetBytesPerRow() calculates incorrectly in iOS 5.0, so defer to CGBitmapContextCreate()
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CGBitmapInfo bitmapInfo = CGImageGetBitmapInfo(imageRef);
-    
-    if (CGColorSpaceGetNumberOfComponents(colorSpace) == 3) {
-        int alpha = (bitmapInfo & kCGBitmapAlphaInfoMask);
-        if (alpha == kCGImageAlphaNone) {
-            bitmapInfo &= ~kCGBitmapAlphaInfoMask;
-            bitmapInfo |= kCGImageAlphaNoneSkipFirst;
-        } else if (!(alpha == kCGImageAlphaNoneSkipFirst || alpha == kCGImageAlphaNoneSkipLast)) {
-            bitmapInfo &= ~kCGBitmapAlphaInfoMask;
-            bitmapInfo |= kCGImageAlphaPremultipliedFirst;
-        }
-    }
-    
-    CGContextRef context = CGBitmapContextCreate(NULL, width, height, bitsPerComponent, bytesPerRow, colorSpace, bitmapInfo);
-    
-    CGColorSpaceRelease(colorSpace);
-    
-    CGRect rect = CGRectMake(0.0f, 0.0f, width, height);
-    CGContextDrawImage(context, rect, imageRef);
-    CGImageRef decodedImage = CGBitmapContextCreateImage(context);
-    CGContextRelease(context);
-    return decodedImage;
-}
-
 + (instancetype)imageWithIncrementalData:(NSData *)data
 {
     OLImage *image = [[OLImage alloc] init];
