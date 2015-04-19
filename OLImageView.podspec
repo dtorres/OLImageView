@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "OLImageView"
-  s.version      = "1.4.1"
+  s.version      = "1.5"
   s.summary      = "Animated GIFs implemented the right way."
   s.homepage     = "https://www.github.com/ondalabs/OLImageView"
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.default_subspec = 'Core'
 
   s.subspec 'Core' do |core|
-    core.source_files = 'OLImage.{h,m}', 'OLImageView.{h,m}'
+    core.source_files = 'OLImage.{h,m}', 'OLImageView.{h,m}', 'OLImageViewDelegate.h'
   end
 
   s.subspec 'AFNetworking' do |af|
