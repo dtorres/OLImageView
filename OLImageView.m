@@ -114,6 +114,9 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
     _animatedImage = animatedImage;
     if (animatedImage == nil) {
         self.layer.contents = nil;
+        self.layer.contentsScale = 1;
+    } else {
+        self.layer.contentsScale = animatedImage.scale;
     }
 }
 
