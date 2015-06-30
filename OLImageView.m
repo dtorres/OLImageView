@@ -120,6 +120,39 @@ const NSTimeInterval kMaxTimeStep = 1; // note: To avoid spiral-o-death
     }
 }
 
+#define OLCaseContentMode(aCase) \
+case UIViewContentMode##aCase: \
+contentsGravity = kCAGravity##aCase; \
+break
+
+- (void)setContentMode:(UIViewContentMode)contentMode
+{
+    NSString *contentsGravity;
+    switch (contentMode) {
+            OLCaseContentMode(Bottom);
+            OLCaseContentMode(BottomLeft);
+            OLCaseContentMode(BottomRight);
+            OLCaseContentMode(Top);
+            OLCaseContentMode(TopLeft);
+            OLCaseContentMode(TopRight);
+            OLCaseContentMode(Center);
+            OLCaseContentMode(Right);
+            OLCaseContentMode(Left);
+        case UIViewContentModeScaleAspectFill:
+            contentsGravity = kCAGravityResizeAspectFill;
+            break;
+        case UIViewContentModeScaleAspectFit:
+            contentsGravity = kCAGravityResizeAspect;
+            break;
+        case UIViewContentModeScaleToFill:
+        case UIViewContentModeRedraw:
+            contentsGravity = kCAGravityResize;
+            break;
+    }
+    self.layer.contentsGravity = contentsGravity;
+    [super setContentMode:contentMode];
+}
+
 - (BOOL)isAnimating
 {
     return [super isAnimating] || (self.displayLink && !self.displayLink.isPaused);
