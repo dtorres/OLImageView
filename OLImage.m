@@ -257,7 +257,7 @@ inline static BOOL isRetinaFilePath(NSString *path)
 - (CGSize)size
 {
     if (self.images.count) {
-        return [[self.images objectAtIndex:0] size];
+        return [(UIImage *)self.images.firstObject size];
     }
     return [super size];
 }
@@ -265,7 +265,7 @@ inline static BOOL isRetinaFilePath(NSString *path)
 - (CGImageRef)CGImage
 {
     if (self.images.count) {
-        return [[self.images objectAtIndex:0] CGImage];
+        return [(UIImage *)self.images.firstObject CGImage];
     } else {
         return [super CGImage];
     }
@@ -274,7 +274,7 @@ inline static BOOL isRetinaFilePath(NSString *path)
 - (UIImageOrientation)imageOrientation
 {
     if (self.images.count) {
-        return [[self.images objectAtIndex:0] imageOrientation];
+        return [(UIImage *)self.images.firstObject imageOrientation];
     } else {
         return [super imageOrientation];
     }
@@ -283,7 +283,7 @@ inline static BOOL isRetinaFilePath(NSString *path)
 - (CGFloat)scale
 {
     if (self.images.count) {
-        return [(UIImage *)[self.images objectAtIndex:0] scale];
+        return [(UIImage *)self.images.firstObject scale];
     } else {
         return [super scale];
     }
