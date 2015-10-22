@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <AFURLResponseSerialization.h>
+#import <AFNetworking/AFURLResponseSerialization.h>
 
 @interface OLImageResponseSerializer : AFImageResponseSerializer
 
