@@ -1,3 +1,6 @@
+ 
+IMPORTANT: This project is no longer being maintained, please have a look at [FLAnimatedImage](https://github.com/Flipboard/FLAnimatedImage)
+
 # OLImageView (and OLImage)
 Everybody loves a good GIF. Unfortunately, Apple's implementation of UIImage doesn't support animated GIFs. OLImage and OLImageView are drop-in replacements for UIImage and UIImageView with really good support for animated GIFs.
 
